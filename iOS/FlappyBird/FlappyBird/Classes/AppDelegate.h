@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------
 
 #import "cocos2d.h"
+#import "CCTextureCache.h"
 
 @interface AppDelegate : CCAppDelegate
+
 @end

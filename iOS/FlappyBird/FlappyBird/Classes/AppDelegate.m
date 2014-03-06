@@ -6,10 +6,10 @@
 //  Copyright Hai Do Minh 2014. All rights reserved.
 //
 // -----------------------------------------------------------------------
-
 #import "AppDelegate.h"
 #import "IntroScene.h"
 #import "HelloWorldScene.h"
+#import "GameConfig.h"
 
 @implementation AppDelegate
 
@@ -32,7 +32,7 @@
 		// Use a 16 bit color buffer: 
 //		CCSetupPixelFormat: kEAGLColorFormatRGB565,
 		// Use a simplified coordinate system that is shared across devices.
-//		CCSetupScreenMode: CCScreenModeFixed,
+		CCSetupScreenMode: CCScreenModeFixed,
 		// Run in portrait mode.
 		CCSetupScreenOrientation: CCScreenOrientationPortrait,
 		// Run at a reduced framerate.
@@ -48,6 +48,18 @@
 
 -(CCScene *)startScene
 {
+    // load Texture into Cache
+    [[CCTextureCache sharedTextureCache] addImage:@"atlas.png"];
+    // load atlas infor
+    NSError *error;
+    NSArray *data = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource: @"atlas" ofType: @"txt"] encoding:NSUTF8StringEncoding error:&error] componentsSeparatedByString: @"\n"];
+    NSMutableDictionary* atlasInfo = [NSMutableDictionary dictionaryWithCapacity:data.count];
+    for (NSInteger i = data.count - 1; i >= 0; i --) {
+        NSArray* datum = [[data objectAtIndex:i] componentsSeparatedByString:@" "];
+        [atlasInfo setObject:datum forKey:[datum objectAtIndex:0]];
+    }
+    GameConfig.atlasInfo = atlasInfo;
+    
 	// This method should return the very first scene to be run when your app starts.
 	return [IntroScene scene];
 }

@@ -226,6 +226,7 @@
 		C8F95B3D18C8845700D9E229 /* newton.png in Resources */ = {isa = PBXBuildFile; fileRef = C8F95B3C18C8845700D9E229 /* newton.png */; };
 		C8F95B4818C8854C00D9E229 /* atlas.png in Resources */ = {isa = PBXBuildFile; fileRef = C8F95B4618C8854C00D9E229 /* atlas.png */; };
 		C8F95B4918C8854C00D9E229 /* atlas.txt in Resources */ = {isa = PBXBuildFile; fileRef = C8F95B4718C8854C00D9E229 /* atlas.txt */; };
+		C8F95B4C18C8A43C00D9E229 /* GameConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F95B4B18C8A43C00D9E229 /* GameConfig.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -686,6 +687,8 @@
 		C8F95B3C18C8845700D9E229 /* newton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newton.png; path = Resources/newton.png; sourceTree = "<group>"; };
 		C8F95B4618C8854C00D9E229 /* atlas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = atlas.png; path = Resources/atlas.png; sourceTree = "<group>"; };
 		C8F95B4718C8854C00D9E229 /* atlas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = atlas.txt; path = Resources/atlas.txt; sourceTree = "<group>"; };
+		C8F95B4A18C8A43C00D9E229 /* GameConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameConfig.h; sourceTree = "<group>"; };
+		C8F95B4B18C8A43C00D9E229 /* GameConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameConfig.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1598,6 +1601,8 @@
 				C8F95B2918C8845700D9E229 /* LightBulb.m */,
 				C8F95B2B18C8845700D9E229 /* Rope.h */,
 				C8F95B2C18C8845700D9E229 /* Rope.m */,
+				C8F95B4A18C8A43C00D9E229 /* GameConfig.h */,
+				C8F95B4B18C8A43C00D9E229 /* GameConfig.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1856,6 +1861,7 @@
 				C8F95B2718C8845700D9E229 /* NewtonSphere.m in Sources */,
 				C8F95B2A18C8845700D9E229 /* LightBulb.m in Sources */,
 				C8F95B2D18C8845700D9E229 /* Rope.m in Sources */,
+				C8F95B4C18C8A43C00D9E229 /* GameConfig.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2055,6 +2061,7 @@
 				C8F95B4218C8845700D9E229 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C8F95B4318C8845700D9E229 /* Build configuration list for PBXNativeTarget "FlappyBird" */ = {
 			isa = XCConfigurationList;
@@ -2063,6 +2070,7 @@
 				C8F95B4518C8845700D9E229 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -11,6 +11,7 @@
 #import "IntroScene.h"
 #import "HelloWorldScene.h"
 #import "NewtonScene.h"
+#import "GameConfig.h"
 
 // -----------------------------------------------------------------------
 #pragma mark - IntroScene
@@ -35,18 +36,8 @@
     self = [super init];
     if (!self) return(nil);
     
-    // load Texture into Cache
-    CCTexture *atlas = [[CCTextureCache sharedTextureCache] addImage:@"atlas.png"];
-    // load atlas infor
-    NSError *error;
-    NSArray *data = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource: @"atlas" ofType: @"txt"] encoding:NSUTF8StringEncoding error:&error] componentsSeparatedByString: @"\n"];
-    NSLog(@"allLines: %d", data.count);
-    NSMutableDictionary *atlasInfo = [NSMutableDictionary dictionaryWithCapacity:data.count];
-    for (NSInteger i = data.count - 1; i >= 0; i --) {
-        NSArray* datum = [[data objectAtIndex:i] componentsSeparatedByString:@" "];
-        [atlasInfo setObject:datum forKey:[datum objectAtIndex:0]];
-    }
-    
+    NSMutableDictionary* atlasInfo = GameConfig.atlasInfo;
+    CCTexture *atlas = GameConfig.atlas;
     // Create a colored background (Dark Grey)
     //    CCNodeColor *background = [CCNodeColor nodeWithColor:[CCColor colorWithRed:0.2f green:0.2f blue:0.2f alpha:1.0f]];
     NSArray *bginfo = [atlasInfo objectForKey:@"bg_day"];
