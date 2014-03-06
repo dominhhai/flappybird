@@ -144,6 +144,10 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		return atlasInfo;
 	}
 
+	private Scene createSplashScene() {
+		return null;
+	}
+	
 	private Scene createMenuScene() {
 		Scene scene = new Scene();
 		
