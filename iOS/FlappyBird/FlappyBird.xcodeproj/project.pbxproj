@@ -224,6 +224,8 @@
 		C8F95B3918C8845700D9E229 /* newton-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = C8F95B3818C8845700D9E229 /* newton-ipad.png */; };
 		C8F95B3B18C8845700D9E229 /* newton.plist in Resources */ = {isa = PBXBuildFile; fileRef = C8F95B3A18C8845700D9E229 /* newton.plist */; };
 		C8F95B3D18C8845700D9E229 /* newton.png in Resources */ = {isa = PBXBuildFile; fileRef = C8F95B3C18C8845700D9E229 /* newton.png */; };
+		C8F95B4818C8854C00D9E229 /* atlas.png in Resources */ = {isa = PBXBuildFile; fileRef = C8F95B4618C8854C00D9E229 /* atlas.png */; };
+		C8F95B4918C8854C00D9E229 /* atlas.txt in Resources */ = {isa = PBXBuildFile; fileRef = C8F95B4718C8854C00D9E229 /* atlas.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -682,6 +684,8 @@
 		C8F95B3818C8845700D9E229 /* newton-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "newton-ipad.png"; path = "Resources/newton-ipad.png"; sourceTree = "<group>"; };
 		C8F95B3A18C8845700D9E229 /* newton.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = newton.plist; path = Resources/newton.plist; sourceTree = "<group>"; };
 		C8F95B3C18C8845700D9E229 /* newton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newton.png; path = Resources/newton.png; sourceTree = "<group>"; };
+		C8F95B4618C8854C00D9E229 /* atlas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = atlas.png; path = Resources/atlas.png; sourceTree = "<group>"; };
+		C8F95B4718C8854C00D9E229 /* atlas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = atlas.txt; path = Resources/atlas.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -753,6 +757,8 @@
 		C8F9588918C8845200D9E229 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C8F95B4618C8854C00D9E229 /* atlas.png */,
+				C8F95B4718C8854C00D9E229 /* atlas.txt */,
 				C8F9588A18C8845200D9E229 /* Default.png */,
 				C8F9588C18C8845200D9E229 /* Default@2x.png */,
 				C8F9588E18C8845200D9E229 /* Default-568h@2x.png */,
@@ -1696,6 +1702,8 @@
 				C8F95B3918C8845700D9E229 /* newton-ipad.png in Resources */,
 				C8F95B3B18C8845700D9E229 /* newton.plist in Resources */,
 				C8F95B3D18C8845700D9E229 /* newton.png in Resources */,
+				C8F95B4818C8854C00D9E229 /* atlas.png in Resources */,
+				C8F95B4918C8854C00D9E229 /* atlas.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
