@@ -26,11 +26,7 @@ public class Bird {
 	
 	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(200, 0, 0.5f);
 	
-	public static enum TYPE {
-		RED,
-		BLUE,
-		YELLOW
-	}
+	public final static int[] TYPE = new int[] {0 /*RED*/, 1 /*BLUE*/, 2 /*YELLOW*/};
 	
 	public static enum STATE {
 		JUMP,
@@ -44,18 +40,18 @@ public class Bird {
 	
 	private AnimatedSprite bird;
 	private Body birdBody;
-	private TYPE type = TYPE.BLUE;
+	private int type = TYPE[0];
 	private STATE state = STATE.NOT_MOVE;
 	private IEntityModifier pEntityModifier;
 	
-	public Bird (MainGameActivity activity, Scene scene, boolean physics,TYPE type, float x, float y) {
+	public Bird (MainGameActivity activity, Scene scene, boolean physics, int type, float x, float y) {
 		this.type = type;
 		this.activity = activity;
 		this.scene = scene;
 		String resource;
-		if (this.type == TYPE.RED) {
+		if (this.type == 0) {
 			resource = "bird2";
-		} else if (this.type == TYPE.BLUE) {
+		} else if (this.type == 1) {
 			resource = "bird1";
 		} else {
 			resource = "bird0";
@@ -92,6 +88,7 @@ public class Bird {
 			if (this.pEntityModifier != null) {
 				this.bird.unregisterEntityModifier(this.pEntityModifier);
 			}
+			// should use DelayModifier?
 			this.pEntityModifier = new SequenceEntityModifier(new RotationModifier((float) 0.3, this.bird.getRotation(), -35), 
 																new RotationModifier((float) 1, -35, 80));
 			this.bird.registerEntityModifier(this.pEntityModifier);

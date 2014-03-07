@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
@@ -33,7 +34,6 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 
 import vn.com.minhhai3b.flappybird.Entity.Bird;
-import vn.com.minhhai3b.flappybird.Entity.Bird.TYPE;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
 import android.view.KeyEvent;
 
@@ -53,6 +53,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	
 	private Sprite backgroud = null;
 	private PhysicsWorld mPhysicsWorld;
+	private Random random = new Random();
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -171,13 +172,9 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	private Scene createMenuScene() {
 		Scene scene = new Scene();
 		
-		if (this.backgroud == null) {
-			int[] bgInfo = this.atlasInfo.get("bg_day");
-			TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
-			this.backgroud = new Sprite(0, 0, backgroudRegion, this.getVertexBufferObjectManager());
-		} else {
-			this.backgroud.detachSelf();
-		}
+		int[] bgInfo = this.atlasInfo.get("bg_day");
+		TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
+		this.backgroud = new Sprite(0, 0, backgroudRegion, this.getVertexBufferObjectManager());
 		scene.attachChild(backgroud);
 		
 		int[] footerInfo = this.atlasInfo.get("land");
@@ -194,7 +191,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		final int[] charInfo_0 = this.atlasInfo.get("bird0_0");
 		TextureRegion titleRegion = new TextureRegion(this.atlas, titleInfo[2], titleInfo[3], titleInfo[0], titleInfo[1]);
 		Sprite title = new Sprite((CAMERA_WIDTH - titleInfo[0] - 5 - charInfo_0[0]) >>> 1, (CAMERA_HEIGHT - titleInfo[1]) >>> 1, titleRegion, this.getVertexBufferObjectManager());				
-		Bird bird = new Bird(this, scene, false,TYPE.YELLOW, ((CAMERA_WIDTH + titleInfo[0] - 5 - charInfo_0[0]) >>> 1) + 5, (CAMERA_HEIGHT - charInfo_0[1]) >>> 1);
+		Bird bird = new Bird(this, scene, false,2, ((CAMERA_WIDTH + titleInfo[0] - 5 - charInfo_0[0]) >>> 1) + 5, (CAMERA_HEIGHT - charInfo_0[1]) >>> 1);
 		title.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
 				new MoveYModifier((float)0.5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 20, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 5),
 				new MoveYModifier((float)0.5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 20))));
@@ -238,13 +235,9 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		Scene scene = new Scene();
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 20), true);
 		
-		if (this.backgroud == null) {
-			int[] bgInfo = this.atlasInfo.get("bg_day");
-			TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
-			this.backgroud = new Sprite(0, 0, backgroudRegion, this.getVertexBufferObjectManager());
-		} else {
-			this.backgroud.detachSelf();
-		}
+		int[] bgInfo = this.atlasInfo.get((this.random.nextInt(2) == 0) ? "bg_day" : "bg_night");
+		TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
+		this.backgroud = new Sprite(0, 0, backgroudRegion, this.getVertexBufferObjectManager());
 		scene.attachChild(this.backgroud);
 		
 		int[] footerInfo = this.atlasInfo.get("land");
@@ -268,7 +261,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
 		
 		// character
-		final Bird bird = new Bird(this, scene, true, TYPE.RED, CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);
+		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3), CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);
 		
 		// Event Listener
 		scene.registerUpdateHandler(this.mPhysicsWorld);
