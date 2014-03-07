@@ -64,7 +64,8 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	private void switchScene(final Scene scene) {
 		if(this.mEngine.getScene() != scene) {
 			this.mEngine.getScene().postRunnable(new Runnable(){
-
+				
+				@Override
 				public void run() {
 					MainGameActivity.this.clearCurrentScene();
 					MainGameActivity.this.mEngine.setScene(scene);
@@ -143,11 +144,11 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		
 		return atlasInfo;
 	}
-
-	private Scene createSplashScene() {
-		return null;
-	}
 	
+	/*
+	 * Menu Scene
+	 * @return
+	 */
 	private Scene createMenuScene() {
 		Scene scene = new Scene();
 		
@@ -209,7 +210,6 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,
 					float pTouchAreaLocalY) {
-				System.out.println("btnScore Clicked!");
 			}
 		});		
 		scene.attachChild(btnPlay);
@@ -220,12 +220,15 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		return scene;
 	}
 	
+	/*
+	 * Play Scene
+	 */
 	private Scene createPlayScene() {
 		Scene scene = new Scene();
 		if (this.backgroud == null) {
-//			int[] bgInfo = this.atlasInfo.get("bg_day");
-//			TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
-//			this.backgroud = new Sprite(0, 0, backgroudRegion, this.getVertexBufferObjectManager());
+			int[] bgInfo = this.atlasInfo.get("bg_day");
+			TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
+			this.backgroud = new Sprite(0, 0, backgroudRegion, this.getVertexBufferObjectManager());
 		} else {
 			this.backgroud.detachSelf();
 		}
@@ -233,10 +236,15 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		return scene;
 	}
 	
+	/*
+	 * Handle keyboard event
+	 * 
+	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(keyCode == KeyEvent.KEYCODE_BACK) {
-			return false;
+			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
