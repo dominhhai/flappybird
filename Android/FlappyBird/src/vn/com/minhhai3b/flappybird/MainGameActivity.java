@@ -13,6 +13,7 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.modifier.LoopEntityModifier;
+import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.MoveYModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
@@ -34,7 +35,6 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import vn.com.minhhai3b.flappybird.Entity.Bird;
 import vn.com.minhhai3b.flappybird.Entity.Bird.TYPE;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
-import android.hardware.SensorManager;
 import android.view.KeyEvent;
 
 import com.badlogic.gdx.math.Vector2;
@@ -189,7 +189,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		TextureRegion copyRegion = new TextureRegion(this.atlas, copyInfo[2], copyInfo[3], copyInfo[0], copyInfo[1]);
 		Sprite copy = new Sprite((CAMERA_WIDTH - copyInfo[0]) >>> 1, CAMERA_HEIGHT - (footerY >>> 1), copyRegion, this.getVertexBufferObjectManager());
 		scene.attachChild(copy);
-		
+
 		final int[] titleInfo = this.atlasInfo.get("title");
 		final int[] charInfo_0 = this.atlasInfo.get("bird0_0");
 		TextureRegion titleRegion = new TextureRegion(this.atlas, titleInfo[2], titleInfo[3], titleInfo[0], titleInfo[1]);
@@ -200,8 +200,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 				new MoveYModifier((float)0.5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 20))));
 		bird.getBird().registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
 				new MoveYModifier((float)0.6, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 30, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 10),
-				new MoveYModifier((float)0.6, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 10, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 30))));
-		bird.getBird().animate(new long[]{150, 150, 150});
+				new MoveYModifier((float)0.6, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 10, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 30))));		
 		scene.attachChild(title);
 		
 		final int[] btnPlayInfo = this.atlasInfo.get("button_play");
@@ -237,24 +236,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 */
 	private Scene createPlayScene() {
 		Scene scene = new Scene();
-		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), true);
-		
-		final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
-		final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - 2, CAMERA_WIDTH, 2, vertexBufferObjectManager);
-		final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2, vertexBufferObjectManager);
-		final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
-		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
-
-		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
-
-		scene.attachChild(ground);
-		scene.attachChild(roof);
-		scene.attachChild(left);
-		scene.attachChild(right);
+		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 20), true);
 		
 		if (this.backgroud == null) {
 			int[] bgInfo = this.atlasInfo.get("bg_day");
@@ -264,6 +246,26 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			this.backgroud.detachSelf();
 		}
 		scene.attachChild(this.backgroud);
+		
+		int[] footerInfo = this.atlasInfo.get("land");
+		TextureRegion footerRegion = new TextureRegion(this.atlas, footerInfo[2], footerInfo[3], footerInfo[0], footerInfo[1]);
+		int footerY = footerInfo[1] * 3 / 4; 
+		Sprite footer = new Sprite(0, CAMERA_HEIGHT - footerY, footerRegion, this.getVertexBufferObjectManager());
+		scene.attachChild(footer);
+		footer.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
+				new MoveXModifier((float)0.8, 0, CAMERA_WIDTH - footerInfo[0]))));
+		
+		final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
+		final Rectangle ground = new Rectangle(0, footer.getY(), CAMERA_WIDTH, 2, vertexBufferObjectManager);
+		final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2, vertexBufferObjectManager);
+		final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
+		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
+
+		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
 		
 		// character
 		final Bird bird = new Bird(this, scene, true, TYPE.RED, CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);

@@ -2,6 +2,9 @@ package vn.com.minhhai3b.flappybird.Entity;
 
 import java.util.Map;
 
+import org.andengine.entity.modifier.IEntityModifier;
+import org.andengine.entity.modifier.RotationModifier;
+import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
@@ -21,7 +24,7 @@ import vn.com.minhhai3b.flappybird.data.GameConfig;
 
 public class Bird {
 	
-	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(15, 0, 0.5f);
+	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(200, 0, 0.5f);
 	
 	public static enum TYPE {
 		RED,
@@ -43,6 +46,7 @@ public class Bird {
 	private Body birdBody;
 	private TYPE type = TYPE.BLUE;
 	private STATE state = STATE.NOT_MOVE;
+	private IEntityModifier pEntityModifier;
 	
 	public Bird (MainGameActivity activity, Scene scene, boolean physics,TYPE type, float x, float y) {
 		this.type = type;
@@ -70,10 +74,13 @@ public class Bird {
 		this.bird = new AnimatedSprite(x, y, charRegion, this.activity.getVertexBufferObjectManager());
 		this.scene.attachChild(this.bird);
 		if (physics) {
+			bird.animate(new long[]{100, 100, 100});
 			this.birdBody = PhysicsFactory.createCircleBody(this.activity.getPhysicsWorld(), this.bird, BodyType.DynamicBody, Bird.FIXTURE_DEF);
-			this.activity.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, true));
+			this.activity.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
 			this.state = STATE.NOT_MOVE;
-		}
+		} else {
+			bird.animate(new long[]{150, 150, 150});
+		}		
 	}
 	
 	public void jumpUp() {
@@ -82,7 +89,12 @@ public class Bird {
 			final Vector2 velocity = Vector2Pool.obtain(0, -4);
 			this.birdBody.setLinearVelocity(velocity);
 			Vector2Pool.recycle(velocity);
-			
+			if (this.pEntityModifier != null) {
+				this.bird.unregisterEntityModifier(this.pEntityModifier);
+			}
+			this.pEntityModifier = new SequenceEntityModifier(new RotationModifier((float) 0.3, this.bird.getRotation(), -35), 
+																new RotationModifier((float) 1, -35, 80));
+			this.bird.registerEntityModifier(this.pEntityModifier);
 		}
 	}
 	
