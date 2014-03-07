@@ -21,7 +21,7 @@ import vn.com.minhhai3b.flappybird.data.GameConfig;
 
 public class Bird {
 	
-	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(15, 0, 0.5f);
 	
 	public static enum TYPE {
 		RED,
@@ -71,7 +71,7 @@ public class Bird {
 		this.scene.attachChild(this.bird);
 		if (physics) {
 			this.birdBody = PhysicsFactory.createCircleBody(this.activity.getPhysicsWorld(), this.bird, BodyType.DynamicBody, Bird.FIXTURE_DEF);
-			this.activity.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
+			this.activity.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, true));
 			this.state = STATE.NOT_MOVE;
 		}
 	}
@@ -79,9 +79,10 @@ public class Bird {
 	public void jumpUp() {
 		if (this.state == STATE.DOWN || this.state == STATE.NOT_MOVE) {
 			// jump up
-			final Vector2 velocity = Vector2Pool.obtain(1, -3);
+			final Vector2 velocity = Vector2Pool.obtain(0, -4);
 			this.birdBody.setLinearVelocity(velocity);
 			Vector2Pool.recycle(velocity);
+			
 		}
 	}
 	
