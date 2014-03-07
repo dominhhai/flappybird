@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 #import "AppDelegate.h"
-#import "IntroScene.h"
+#import "MenuScene.h"
 #import "HelloWorldScene.h"
 #import "GameConfig.h"
 
@@ -61,7 +61,7 @@
     GameConfig.atlasInfo = atlasInfo;
     
 	// This method should return the very first scene to be run when your app starts.
-	return [IntroScene scene];
+	return [MenuScene scene];
 }
 
 @end
