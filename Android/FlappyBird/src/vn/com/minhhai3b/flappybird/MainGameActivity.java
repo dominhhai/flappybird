@@ -8,37 +8,51 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveYModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.TextureRegion;
-import org.andengine.opengl.texture.region.TiledTextureRegion;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 
+import vn.com.minhhai3b.flappybird.Entity.Bird;
+import vn.com.minhhai3b.flappybird.Entity.Bird.TYPE;
+import vn.com.minhhai3b.flappybird.data.GameConfig;
+import android.hardware.SensorManager;
 import android.view.KeyEvent;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class MainGameActivity extends SimpleBaseGameActivity {
 
-	private static final int CAMERA_WIDTH = 288;
-	private static final int CAMERA_HEIGHT = 512;
+	public static final int CAMERA_WIDTH = 288;
+	public static final int CAMERA_HEIGHT = 512;
 
 	private Camera mCamera = null;
 	
 	private Map<String, int[]> atlasInfo = null;
 	private Texture atlas = null;
 	
-	Sprite backgroud = null;
+	private Sprite backgroud = null;
+	private PhysicsWorld mPhysicsWorld;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -53,12 +67,17 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	protected void onCreateResources() {
 		this.atlasInfo = this.decodeAtlasInfo();
 		this.atlas = this.decodeAtlasTexture();
-		this.atlas.load();		
+		this.atlas.load();
+		GameConfig.getInstance().setAtlas(this.atlas, this.atlasInfo);
 	}
 
 	@Override
 	protected Scene onCreateScene() {
 		return this.createMenuScene();
+	}
+	
+	public PhysicsWorld getPhysicsWorld() {
+		return this.mPhysicsWorld;
 	}
 	
 	private void switchScene(final Scene scene) {
@@ -173,24 +192,17 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		
 		final int[] titleInfo = this.atlasInfo.get("title");
 		final int[] charInfo_0 = this.atlasInfo.get("bird0_0");
-		final int[] charInfo_1 = this.atlasInfo.get("bird0_1");
-		final int[] charInfo_2 = this.atlasInfo.get("bird0_2");
 		TextureRegion titleRegion = new TextureRegion(this.atlas, titleInfo[2], titleInfo[3], titleInfo[0], titleInfo[1]);
 		Sprite title = new Sprite((CAMERA_WIDTH - titleInfo[0] - 5 - charInfo_0[0]) >>> 1, (CAMERA_HEIGHT - titleInfo[1]) >>> 1, titleRegion, this.getVertexBufferObjectManager());				
-		TextureRegion charRegion_0 = new TextureRegion(this.atlas, charInfo_0[2], charInfo_0[3], charInfo_0[0], charInfo_0[1]);
-		TextureRegion charRegion_1 = new TextureRegion(this.atlas, charInfo_1[2], charInfo_1[3], charInfo_1[0], charInfo_1[1]);
-		TextureRegion charRegion_2 = new TextureRegion(this.atlas, charInfo_2[2], charInfo_2[3], charInfo_2[0], charInfo_2[1]);
-		TiledTextureRegion charRegion = new TiledTextureRegion(this.atlas, charRegion_0, charRegion_1, charRegion_2);
-		AnimatedSprite character = new AnimatedSprite(((CAMERA_WIDTH + titleInfo[0] - 5 - charInfo_0[0]) >>> 1) + 5, (CAMERA_HEIGHT - charInfo_0[1]) >>> 1, charRegion, this.getVertexBufferObjectManager());
+		Bird bird = new Bird(this, scene, false,TYPE.YELLOW, ((CAMERA_WIDTH + titleInfo[0] - 5 - charInfo_0[0]) >>> 1) + 5, (CAMERA_HEIGHT - charInfo_0[1]) >>> 1);
 		title.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
 				new MoveYModifier((float)0.5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 20, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 5),
 				new MoveYModifier((float)0.5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 20))));
-		character.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
+		bird.getBird().registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
 				new MoveYModifier((float)0.6, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 30, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 10),
 				new MoveYModifier((float)0.6, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 10, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 30))));
-		character.animate(new long[]{150, 150, 150});
+		bird.getBird().animate(new long[]{150, 150, 150});
 		scene.attachChild(title);
-		scene.attachChild(character);
 		
 		final int[] btnPlayInfo = this.atlasInfo.get("button_play");
 		final int[] btnScoreInfo = this.atlasInfo.get("button_score");
@@ -225,6 +237,25 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 */
 	private Scene createPlayScene() {
 		Scene scene = new Scene();
+		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), true);
+		
+		final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
+		final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - 2, CAMERA_WIDTH, 2, vertexBufferObjectManager);
+		final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2, vertexBufferObjectManager);
+		final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
+		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
+
+		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
+
+		scene.attachChild(ground);
+		scene.attachChild(roof);
+		scene.attachChild(left);
+		scene.attachChild(right);
+		
 		if (this.backgroud == null) {
 			int[] bgInfo = this.atlasInfo.get("bg_day");
 			TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
@@ -233,6 +264,36 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			this.backgroud.detachSelf();
 		}
 		scene.attachChild(this.backgroud);
+		
+		// character
+		final Bird bird = new Bird(this, scene, true, TYPE.RED, CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);
+		
+		// Event Listener
+		scene.registerUpdateHandler(this.mPhysicsWorld);
+		
+		scene.registerUpdateHandler(new IUpdateHandler() {
+			
+			@Override
+			public void reset() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onUpdate(float pSecondsElapsed) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		scene.setOnSceneTouchListener(new IOnSceneTouchListener() {
+			
+			@Override
+			public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+				bird.jumpUp();
+				return false;
+			}
+		});
 		return scene;
 	}
 	
@@ -241,12 +302,12 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 * 
 	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
 	 */
-//	@Override
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		if(keyCode == KeyEvent.KEYCODE_BACK) {
-//			return true;
-//		}
-//		return super.onKeyDown(keyCode, event);
-//	}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 	
 }
