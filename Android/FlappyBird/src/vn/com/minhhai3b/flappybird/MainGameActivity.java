@@ -4,11 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.channels.Pipe.SinkChannel;
+import java.nio.channels.Pipe.SourceChannel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -34,6 +37,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 
 import vn.com.minhhai3b.flappybird.Entity.Bird;
+import vn.com.minhhai3b.flappybird.Entity.Pipe;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
 import android.view.KeyEvent;
 
@@ -233,6 +237,8 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 */
 	private Scene createPlayScene() {
 		Scene scene = new Scene();
+		HUD hud = new HUD();
+		this.mCamera.setHUD(hud);
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 20), true);
 		
 		int[] bgInfo = this.atlasInfo.get((this.random.nextInt(2) == 0) ? "bg_day" : "bg_night");
@@ -244,7 +250,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		TextureRegion footerRegion = new TextureRegion(this.atlas, footerInfo[2], footerInfo[3], footerInfo[0], footerInfo[1]);
 		int footerY = footerInfo[1] * 3 / 4; 
 		Sprite footer = new Sprite(0, CAMERA_HEIGHT - footerY, footerRegion, this.getVertexBufferObjectManager());
-		scene.attachChild(footer);
+		hud.attachChild(footer);
 		footer.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
 				new MoveXModifier((float)0.8, 0, CAMERA_WIDTH - footerInfo[0]))));
 		
@@ -262,6 +268,9 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		
 		// character
 		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3), CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);
+		
+		Pipe pipe = new Pipe(this, 0, 100, 50, 100);
+		pipe.attachToScene(scene);
 		
 		// Event Listener
 		scene.registerUpdateHandler(this.mPhysicsWorld);
