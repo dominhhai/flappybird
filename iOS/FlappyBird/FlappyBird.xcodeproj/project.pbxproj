@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C8F6473A18C9CD3100CBF405 /* GameConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6473918C9CD3100CBF405 /* GameConfig.m */; };
 		C8F6474018C9CEA100CBF405 /* MenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6473F18C9CEA100CBF405 /* MenuScene.m */; };
+		C8F6474318C9D3D600CBF405 /* Bird.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6474218C9D3D600CBF405 /* Bird.m */; };
 		C8F9587118C8845200D9E229 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8F9587018C8845200D9E229 /* QuartzCore.framework */; };
 		C8F9587318C8845200D9E229 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8F9587218C8845200D9E229 /* OpenGLES.framework */; };
 		C8F9587518C8845200D9E229 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8F9587418C8845200D9E229 /* OpenAL.framework */; };
@@ -229,6 +230,8 @@
 		C8F6473918C9CD3100CBF405 /* GameConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameConfig.m; path = Classes/GameConfig.m; sourceTree = "<group>"; };
 		C8F6473E18C9CEA100CBF405 /* MenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuScene.h; path = Classes/MenuScene.h; sourceTree = "<group>"; };
 		C8F6473F18C9CEA100CBF405 /* MenuScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MenuScene.m; path = Classes/MenuScene.m; sourceTree = "<group>"; };
+		C8F6474118C9D3D600CBF405 /* Bird.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bird.h; path = Classes/Bird.h; sourceTree = "<group>"; };
+		C8F6474218C9D3D600CBF405 /* Bird.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bird.m; path = Classes/Bird.m; sourceTree = "<group>"; };
 		C8F9586D18C8845200D9E229 /* FlappyBird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlappyBird.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8F9587018C8845200D9E229 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C8F9587218C8845200D9E229 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1546,6 +1549,8 @@
 				C8F6473918C9CD3100CBF405 /* GameConfig.m */,
 				C8F6473E18C9CEA100CBF405 /* MenuScene.h */,
 				C8F6473F18C9CEA100CBF405 /* MenuScene.m */,
+				C8F6474118C9D3D600CBF405 /* Bird.h */,
+				C8F6474218C9D3D600CBF405 /* Bird.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1790,6 +1795,7 @@
 				C8F95B1A18C8845700D9E229 /* AppDelegate.m in Sources */,
 				C8F6473A18C9CD3100CBF405 /* GameConfig.m in Sources */,
 				C8F6474018C9CEA100CBF405 /* MenuScene.m in Sources */,
+				C8F6474318C9D3D600CBF405 /* Bird.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

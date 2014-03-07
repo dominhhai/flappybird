@@ -32,7 +32,7 @@
 		// Use a 16 bit color buffer: 
 //		CCSetupPixelFormat: kEAGLColorFormatRGB565,
 		// Use a simplified coordinate system that is shared across devices.
-		CCSetupScreenMode: CCScreenModeFixed,
+//		CCSetupScreenMode: CCScreenModeFixed,
 		// Run in portrait mode.
 		CCSetupScreenOrientation: CCScreenOrientationPortrait,
 		// Run at a reduced framerate.
