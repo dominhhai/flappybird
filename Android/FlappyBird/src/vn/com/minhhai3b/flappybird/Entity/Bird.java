@@ -103,17 +103,22 @@ public class Bird {
 				this.bird.unregisterEntityModifier(this.pEntityModifier);
 			}
 			// should use DelayModifier?
-			this.pEntityModifier = new SequenceEntityModifier(new RotationModifier((float) 0.3, this.bird.getRotation(), -35), 
-																new RotationModifier((float) 1, -35, 80));
+			this.pEntityModifier = new SequenceEntityModifier(new RotationModifier(0.3f, this.bird.getRotation(), -35), 
+																new RotationModifier(1, -35, 80));
 			this.bird.registerEntityModifier(this.pEntityModifier);
 		}
 	}
 	
-	public void setState(STATE state) {
+	public void setState(STATE state, boolean collisionGround) {
 		this.state = state;
 		if (state == STATE.DIE) {
 			this.bird.clearEntityModifiers();
-			this.bird.stopAnimation();
+			if (collisionGround) {
+				this.bird.stopAnimation();
+				this.birdBody.setActive(false);	
+			} else {			
+				this.bird.registerEntityModifier(new RotationModifier(1, this.bird.getRotation(), 80));
+			}
 		}
 	}
 	

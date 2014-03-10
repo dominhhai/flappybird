@@ -295,8 +295,19 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		this.mPhysicsWorld.setContactListener(new ContactListener() {
 			
 			@Override
-			public void preSolve(Contact contact, Manifold oldManifold) {
-				// TODO Auto-generated method stub
+			public void preSolve(Contact contact, Manifold oldManifold) {				
+			}
+			
+			@Override
+			public void postSolve(Contact contact, ContactImpulse impulse) {
+			}
+			
+			@Override
+			public void endContact(Contact contact) {
+			}
+			
+			@Override
+			public void beginContact(Contact contact) {
 				final Body b1 = contact.getFixtureA().getBody();
 	            final Body b2 = contact.getFixtureB().getBody();
 	            final String b1Name = (String) b1.getUserData();
@@ -307,28 +318,10 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	            	// pause Pipe
 	            	pipe.pause();
 	            	// bird die
-	            	bird.setState(STATE.DIE);
+	            	bird.setState(STATE.DIE, (b1Name == null || b2Name == null));
 	            	// physicsworld destroy
 	            	MainGameActivity.this.destroyWorld = true;
 	            }
-			}
-			
-			@Override
-			public void postSolve(Contact contact, ContactImpulse impulse) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void endContact(Contact contact) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void beginContact(Contact contact) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		scene.registerUpdateHandler(this.mPhysicsWorld);
@@ -337,26 +330,26 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			
 			@Override
 			public void run() {
-//				if (MainGameActivity.this.destroyWorld) {
-//					Iterator<Body> localIterator = mPhysicsWorld.getBodies();
-//					while (true) {
-//						if (!localIterator.hasNext()) {
-//							mPhysicsWorld.clearForces();
-//							mPhysicsWorld.clearPhysicsConnectors();
-//							mPhysicsWorld.reset();
-//							mPhysicsWorld.dispose();
-//							System.gc();
-//							break;
-//						}
-//						try {
-//							final Body localBody = (Body) localIterator.next();
-//							mPhysicsWorld.destroyBody(localBody);
-//						} catch (Exception localException) {
-//							localException.printStackTrace();
-//						}
-//					}
-//					MainGameActivity.this.destroyWorld = false;
-//				}
+				if (MainGameActivity.this.destroyWorld) {
+					Iterator<Body> localIterator = mPhysicsWorld.getBodies();
+					while (true) {
+						if (!localIterator.hasNext()) {
+							mPhysicsWorld.clearForces();
+							mPhysicsWorld.clearPhysicsConnectors();
+							mPhysicsWorld.reset();
+							mPhysicsWorld.dispose();
+							System.gc();
+							break;
+						}
+						try {
+							final Body localBody = (Body) localIterator.next();
+							mPhysicsWorld.destroyBody(localBody);
+						} catch (Exception localException) {
+							localException.printStackTrace();
+						}
+					}
+					MainGameActivity.this.destroyWorld = false;
+				}
 			}
 		});
 		
