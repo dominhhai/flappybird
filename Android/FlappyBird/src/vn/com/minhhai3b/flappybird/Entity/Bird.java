@@ -5,6 +5,7 @@ import java.util.Map;
 import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
@@ -31,7 +32,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class Bird {
 	
-	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(200, 0, 0.5f);
+	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(200, 0, 0);
 	public static final String BIRD = "BIRD";
 	
 	public final static int[] TYPE = new int[] {0 /*RED*/, 1 /*BLUE*/, 2 /*YELLOW*/};
@@ -80,7 +81,8 @@ public class Bird {
 		if (physics) {
 			bird.animate(new long[]{100, 100, 100});
 			PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
-			this.birdBody = PhysicsFactory.createCircleBody(physicsWorld, this.bird, BodyType.DynamicBody, Bird.FIXTURE_DEF);
+			final Rectangle birdRec = new Rectangle(x + 9, y + 9, 30, 30, this.activity.getVertexBufferObjectManager());
+			this.birdBody = PhysicsFactory.createCircleBody(physicsWorld, birdRec, BodyType.DynamicBody, Bird.FIXTURE_DEF);
 			this.birdBody.setUserData(Bird.BIRD);
 			physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
 			this.state = STATE.NOT_MOVE;

@@ -288,7 +288,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			this.activePipe.clear();
 		}
 		
-		final Pipe pipe = PipePool.getInstance().getPipe(this, 0, CAMERA_WIDTH, 50, 100);
+		final Pipe pipe = PipePool.getInstance().getPipe(this, 0, CAMERA_WIDTH, 300, 100);
 		pipe.attachToScene(scene);
 		
 		// Event Listener
@@ -337,26 +337,26 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			
 			@Override
 			public void run() {
-				if (MainGameActivity.this.destroyWorld) {
-					Iterator<Body> localIterator = mPhysicsWorld.getBodies();
-					while (true) {
-						if (!localIterator.hasNext()) {
-							mPhysicsWorld.clearForces();
-							mPhysicsWorld.clearPhysicsConnectors();
-							mPhysicsWorld.reset();
-							mPhysicsWorld.dispose();
-							System.gc();
-							break;
-						}
-						try {
-							final Body localBody = (Body) localIterator.next();
-							mPhysicsWorld.destroyBody(localBody);
-						} catch (Exception localException) {
-							localException.printStackTrace();
-						}
-					}
-					MainGameActivity.this.destroyWorld = false;
-				}
+//				if (MainGameActivity.this.destroyWorld) {
+//					Iterator<Body> localIterator = mPhysicsWorld.getBodies();
+//					while (true) {
+//						if (!localIterator.hasNext()) {
+//							mPhysicsWorld.clearForces();
+//							mPhysicsWorld.clearPhysicsConnectors();
+//							mPhysicsWorld.reset();
+//							mPhysicsWorld.dispose();
+//							System.gc();
+//							break;
+//						}
+//						try {
+//							final Body localBody = (Body) localIterator.next();
+//							mPhysicsWorld.destroyBody(localBody);
+//						} catch (Exception localException) {
+//							localException.printStackTrace();
+//						}
+//					}
+//					MainGameActivity.this.destroyWorld = false;
+//				}
 			}
 		});
 		
@@ -376,12 +376,12 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 * 
 	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
 	 */
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(keyCode == KeyEvent.KEYCODE_BACK) {
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		if(keyCode == KeyEvent.KEYCODE_BACK) {
+//			return true;
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
 	
 }

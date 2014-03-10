@@ -29,7 +29,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class Pipe {
 	
-	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(0, 0, 0.5f);
+	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(0, 0.5f, 0);
 	public static final String PIPE = "PIPE";
 	
 	public final static int[] TYPE = new int[]{0, 1};
