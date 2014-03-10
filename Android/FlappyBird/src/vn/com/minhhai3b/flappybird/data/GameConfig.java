@@ -5,8 +5,10 @@ import java.util.Map;
 import org.andengine.opengl.texture.Texture;
 
 public class GameConfig {
-
+	
 	private static GameConfig instance;
+	
+	public static final float VELOCITY = (float) 60.0;
 	
 	public static GameConfig getInstance() {
 		if (instance == null) {
@@ -16,7 +18,7 @@ public class GameConfig {
 	}
 	
 	private Map<String, int[]> atlasInfo = null;
-	private Texture atlas = null;
+	private Texture atlas = null;	
 	
 	private GameConfig() {
 	}

@@ -38,6 +38,7 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 
 import vn.com.minhhai3b.flappybird.Entity.Bird;
 import vn.com.minhhai3b.flappybird.Entity.Pipe;
+import vn.com.minhhai3b.flappybird.Entity.PipePool;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
 import android.view.KeyEvent;
 
@@ -251,8 +252,10 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		int footerY = footerInfo[1] * 3 / 4; 
 		Sprite footer = new Sprite(0, CAMERA_HEIGHT - footerY, footerRegion, this.getVertexBufferObjectManager());
 		hud.attachChild(footer);
+		float footerMoveDuration = Math.abs(CAMERA_WIDTH - footerInfo[0]) / GameConfig.VELOCITY;
+		System.out.println("duration: " + footerMoveDuration);
 		footer.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
-				new MoveXModifier((float)0.8, 0, CAMERA_WIDTH - footerInfo[0]))));
+				new MoveXModifier(footerMoveDuration, 0, CAMERA_WIDTH - footerInfo[0]))));
 		
 		final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
 		final Rectangle ground = new Rectangle(0, footer.getY(), CAMERA_WIDTH, 2, vertexBufferObjectManager);
@@ -268,8 +271,8 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		
 		// character
 		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3), CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);
-		
-		Pipe pipe = new Pipe(this, 0, 100, 50, 100);
+				
+		Pipe pipe = PipePool.getInstance().getPipe(this, 0, 100, 50, 100);
 		pipe.attachToScene(scene);
 		
 		// Event Listener
