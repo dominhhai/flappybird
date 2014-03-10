@@ -41,6 +41,7 @@ import vn.com.minhhai3b.flappybird.data.GameConfig;
 import android.view.KeyEvent;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
@@ -260,7 +261,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		Sprite footer = new Sprite(0, CAMERA_HEIGHT - footerY, footerRegion, this.getVertexBufferObjectManager());
 		hud.attachChild(footer);
 		float footerMoveDuration = Math.abs(CAMERA_WIDTH - footerInfo[0]) / GameConfig.VELOCITY;
-		System.out.println("duration: " + footerMoveDuration);
+
 		footer.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
 				new MoveXModifier(footerMoveDuration, 0, CAMERA_WIDTH - footerInfo[0]))));
 		
@@ -272,7 +273,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		// character
 		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3), CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);
 				
-		Pipe pipe = PipePool.getInstance().getPipe(this, 0, 100, 50, 100);
+		final Pipe pipe = PipePool.getInstance().getPipe(this, 0, 100, 50, 100);
 		pipe.attachToScene(scene);
 		
 		// Event Listener
@@ -283,13 +284,21 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			@Override
 			public void reset() {
 				// TODO Auto-generated method stub
-				
+				/*
+				 * body.applyForce(-physicsWorld.getGravity().x * body.getMass(),
+                            -physicsWorld.getGravity().y * body.getMass(),
+                             body.getWorldCenter().x, 
+                             body.getWorldCenter().y);
+				 */
 			}
 			
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				// TODO Auto-generated method stub
-				
+				Body topbody = pipe.getTopSpriteBody(),
+						bottombody = pipe.getBottomSpriteBody();				
+				System.out.println("topbody: " + topbody.getPosition().x + ", " + topbody.getPosition().y + "; " + topbody.getMass());
+				System.out.println("bottombody: " + bottombody.getPosition().x + ", " + bottombody.getPosition().y + "; " + bottombody.getMass());
 			}
 		});
 		

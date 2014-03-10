@@ -15,13 +15,13 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
+import vn.com.minhhai3b.flappybird.MainGameActivity;
+import vn.com.minhhai3b.flappybird.data.GameConfig;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-
-import vn.com.minhhai3b.flappybird.MainGameActivity;
-import vn.com.minhhai3b.flappybird.data.GameConfig;
 
 /**
  * (c) 2014 Hai Do Minh

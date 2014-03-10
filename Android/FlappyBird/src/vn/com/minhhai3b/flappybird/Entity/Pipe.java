@@ -19,6 +19,7 @@ import vn.com.minhhai3b.flappybird.data.GameConfig;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.MassData;
 
 /**
  * (c) 2014 Hai Do Minh
@@ -60,6 +61,7 @@ public class Pipe implements IEntityModifierListener{
 		PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
 		this.sprTopBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprTop, BodyType.DynamicBody, MainGameActivity.wallFixtureDef);
 		this.sprBottomBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprBottom, BodyType.DynamicBody, MainGameActivity.wallFixtureDef);
+
 		physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprTop, this.sprTopBody, true, false));
 		physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprBottom, this.sprBottomBody, true, false));
 	}
@@ -92,6 +94,10 @@ public class Pipe implements IEntityModifierListener{
 	}
 	
 	public void attachToScene(Scene scene) {
+		this.sprTop.setVisible(true);
+		this.sprBottom.setVisible(true);
+		this.sprTopBody.setActive(true);
+		this.sprBottomBody.setActive(true);
 		scene.attachChild(this.sprTop);
 		scene.attachChild(this.sprBottom);
 		float pipeMoveDuration = (MainGameActivity.CAMERA_WIDTH + this.sprTop.getWidth()) / GameConfig.VELOCITY;
@@ -102,6 +108,10 @@ public class Pipe implements IEntityModifierListener{
 	public void detachFromScene() {
 		Pipe.this.sprTop.detachSelf();
 		Pipe.this.sprBottom.detachSelf();
+		Pipe.this.sprTop.setVisible(false);
+		Pipe.this.sprBottom.setVisible(false);
+		Pipe.this.sprTopBody.setActive(false);
+		Pipe.this.sprBottomBody.setActive(false);
 	}
 
 	@Override
