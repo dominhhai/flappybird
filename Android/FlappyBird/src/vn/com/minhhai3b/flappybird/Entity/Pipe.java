@@ -2,24 +2,24 @@ package vn.com.minhhai3b.flappybird.Entity;
 
 import java.util.Map;
 
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
-import org.andengine.entity.modifier.MoveXModifier;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
-import org.andengine.util.modifier.IModifier;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.MassData;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 /**
  * (c) 2014 Hai Do Minh
@@ -27,7 +27,10 @@ import com.badlogic.gdx.physics.box2d.MassData;
  * @author Hai Do Minh
  */
 
-public class Pipe implements IEntityModifierListener{
+public class Pipe {
+	
+	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(0, 0, 0.5f);
+	public static final String PIPE = "PIPE";
 	
 	public final static int[] TYPE = new int[]{0, 1};
 	public final static float MAX_TOP = MainGameActivity.CAMERA_HEIGHT / 4;
@@ -59,8 +62,10 @@ public class Pipe implements IEntityModifierListener{
 		this.sprTop = new Sprite(px, ptop, upRegion, activity.getVertexBufferObjectManager());
 		this.sprBottom = new Sprite(px, pbottom, downRegion, activity.getVertexBufferObjectManager());
 		PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
-		this.sprTopBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprTop, BodyType.DynamicBody, MainGameActivity.wallFixtureDef);
-		this.sprBottomBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprBottom, BodyType.DynamicBody, MainGameActivity.wallFixtureDef);
+		this.sprTopBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprTop, BodyType.KinematicBody, FIXTURE_DEF);
+		this.sprBottomBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprBottom, BodyType.KinematicBody, FIXTURE_DEF);
+		this.sprTopBody.setUserData(Pipe.PIPE);
+		this.sprBottomBody.setUserData(Pipe.PIPE);
 
 		physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprTop, this.sprTopBody, true, false));
 		physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprBottom, this.sprBottomBody, true, false));
@@ -100,30 +105,37 @@ public class Pipe implements IEntityModifierListener{
 		this.sprBottomBody.setActive(true);
 		scene.attachChild(this.sprTop);
 		scene.attachChild(this.sprBottom);
-		float pipeMoveDuration = (MainGameActivity.CAMERA_WIDTH + this.sprTop.getWidth()) / GameConfig.VELOCITY;
-		this.sprTop.registerEntityModifier(new MoveXModifier(pipeMoveDuration, MainGameActivity.CAMERA_WIDTH, -this.sprTop.getWidth()));
-		this.sprBottom.registerEntityModifier(new MoveXModifier(pipeMoveDuration, MainGameActivity.CAMERA_WIDTH, -this.sprTop.getWidth(), this));
+		float pipeVec = - GameConfig.VELOCITY / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+		Vector2 velocity = Vector2Pool.obtain(pipeVec, 0);
+		this.sprBottomBody.setLinearVelocity(velocity);
+		this.sprTopBody.setLinearVelocity(velocity);
+		Vector2Pool.recycle(velocity);
+
+		this.sprBottom.registerUpdateHandler(new IUpdateHandler() {
+			
+			@Override
+			public void reset() {
+			}
+			
+			@Override
+			public void onUpdate(float pSecondsElapsed) {
+				if (Pipe.this.sprBottom.getX() < - Pipe.this.sprBottom.getWidth()) {
+					PipePool.getInstance().releasePipe(Pipe.this);
+				}
+			}
+		});
 	}
 	
 	public void detachFromScene() {
-		Pipe.this.sprTop.detachSelf();
-		Pipe.this.sprBottom.detachSelf();
-		Pipe.this.sprTop.setVisible(false);
-		Pipe.this.sprBottom.setVisible(false);
-		Pipe.this.sprTopBody.setActive(false);
-		Pipe.this.sprBottomBody.setActive(false);
+		this.sprTop.detachSelf();
+		this.sprBottom.detachSelf();
+		this.sprTop.setVisible(false);
+		this.sprBottom.setVisible(false);
+		this.pause();
 	}
-
-	@Override
-	public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
-		// TODO Auto-generated method stub
-		
+	
+	public void pause() {
+		this.sprTopBody.setActive(false);
+		this.sprBottomBody.setActive(false);
 	}
-
-	@Override
-	public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
-		// detach
-		PipePool.getInstance().releasePipe(Pipe.this);	
-	}
-
 }

@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
@@ -35,6 +36,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 
 import vn.com.minhhai3b.flappybird.Entity.Bird;
+import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
 import vn.com.minhhai3b.flappybird.Entity.Pipe;
 import vn.com.minhhai3b.flappybird.Entity.PipePool;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
@@ -43,7 +45,11 @@ import android.view.KeyEvent;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 
 
 /**
@@ -57,7 +63,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	public static final int CAMERA_WIDTH = 288;
 	public static final int CAMERA_HEIGHT = 512;
 	
-	public static final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
+	public static final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0);
 
 	private Camera mCamera = null;
 	
@@ -67,6 +73,8 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	private Sprite backgroud = null;
 	private PhysicsWorld mPhysicsWorld;
 	private Random random = new Random();
+	private ArrayList<Pipe> activePipe;
+	private boolean destroyWorld = false;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -249,6 +257,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		HUD hud = new HUD();
 		this.mCamera.setHUD(hud);
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 20), true);
+		this.destroyWorld = false;
 		
 		int[] bgInfo = this.atlasInfo.get((this.random.nextInt(2) == 0) ? "bg_day" : "bg_night");
 		TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
@@ -258,7 +267,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		int[] footerInfo = this.atlasInfo.get("land");
 		TextureRegion footerRegion = new TextureRegion(this.atlas, footerInfo[2], footerInfo[3], footerInfo[0], footerInfo[1]);
 		int footerY = footerInfo[1] * 3 / 4; 
-		Sprite footer = new Sprite(0, CAMERA_HEIGHT - footerY, footerRegion, this.getVertexBufferObjectManager());
+		final Sprite footer = new Sprite(0, CAMERA_HEIGHT - footerY, footerRegion, this.getVertexBufferObjectManager());
 		hud.attachChild(footer);
 		float footerMoveDuration = Math.abs(CAMERA_WIDTH - footerInfo[0]) / GameConfig.VELOCITY;
 
@@ -272,33 +281,82 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		
 		// character
 		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3), CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);
-				
-		final Pipe pipe = PipePool.getInstance().getPipe(this, 0, 100, 50, 100);
+		
+		if (this.activePipe == null) {
+			this.activePipe = new ArrayList<Pipe>();
+		} else {
+			this.activePipe.clear();
+		}
+		
+		final Pipe pipe = PipePool.getInstance().getPipe(this, 0, CAMERA_WIDTH, 50, 100);
 		pipe.attachToScene(scene);
 		
 		// Event Listener
-		scene.registerUpdateHandler(this.mPhysicsWorld);
-		
-		scene.registerUpdateHandler(new IUpdateHandler() {
+		this.mPhysicsWorld.setContactListener(new ContactListener() {
 			
 			@Override
-			public void reset() {
+			public void preSolve(Contact contact, Manifold oldManifold) {
 				// TODO Auto-generated method stub
-				/*
-				 * body.applyForce(-physicsWorld.getGravity().x * body.getMass(),
-                            -physicsWorld.getGravity().y * body.getMass(),
-                             body.getWorldCenter().x, 
-                             body.getWorldCenter().y);
-				 */
+				final Body b1 = contact.getFixtureA().getBody();
+	            final Body b2 = contact.getFixtureB().getBody();
+	            final String b1Name = (String) b1.getUserData();
+	            final String b2Name = (String) b2.getUserData();
+	            if ((b1Name !=null && b1Name.equals(Bird.BIRD)) || (b2Name !=null && b2Name.equals(Bird.BIRD))) {
+	            	// pause footer
+	            	footer.clearEntityModifiers();
+	            	// pause Pipe
+	            	pipe.pause();
+	            	// bird die
+	            	bird.setState(STATE.DIE);
+	            	// physicsworld destroy
+	            	MainGameActivity.this.destroyWorld = true;
+	            }
 			}
 			
 			@Override
-			public void onUpdate(float pSecondsElapsed) {
+			public void postSolve(Contact contact, ContactImpulse impulse) {
 				// TODO Auto-generated method stub
-				Body topbody = pipe.getTopSpriteBody(),
-						bottombody = pipe.getBottomSpriteBody();				
-				System.out.println("topbody: " + topbody.getPosition().x + ", " + topbody.getPosition().y + "; " + topbody.getMass());
-				System.out.println("bottombody: " + bottombody.getPosition().x + ", " + bottombody.getPosition().y + "; " + bottombody.getMass());
+				
+			}
+			
+			@Override
+			public void endContact(Contact contact) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beginContact(Contact contact) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		scene.registerUpdateHandler(this.mPhysicsWorld);
+		
+		this.mEngine.runOnUpdateThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (MainGameActivity.this.destroyWorld) {
+					Iterator<Body> localIterator = mPhysicsWorld.getBodies();
+					while (true) {
+						if (!localIterator.hasNext()) {
+							mPhysicsWorld.clearForces();
+							mPhysicsWorld.clearPhysicsConnectors();
+							mPhysicsWorld.reset();
+							mPhysicsWorld.dispose();
+							System.gc();
+							break;
+						}
+						try {
+							final Body localBody = (Body) localIterator.next();
+							mPhysicsWorld.destroyBody(localBody);
+						} catch (Exception localException) {
+							localException.printStackTrace();
+						}
+					}
+					MainGameActivity.this.destroyWorld = false;
+				}
 			}
 		});
 		

@@ -32,6 +32,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 public class Bird {
 	
 	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(200, 0, 0.5f);
+	public static final String BIRD = "BIRD";
 	
 	public final static int[] TYPE = new int[] {0 /*RED*/, 1 /*BLUE*/, 2 /*YELLOW*/};
 	
@@ -80,6 +81,7 @@ public class Bird {
 			bird.animate(new long[]{100, 100, 100});
 			PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
 			this.birdBody = PhysicsFactory.createCircleBody(physicsWorld, this.bird, BodyType.DynamicBody, Bird.FIXTURE_DEF);
+			this.birdBody.setUserData(Bird.BIRD);
 			physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
 			this.state = STATE.NOT_MOVE;
 		} else {
@@ -102,6 +104,14 @@ public class Bird {
 			this.pEntityModifier = new SequenceEntityModifier(new RotationModifier((float) 0.3, this.bird.getRotation(), -35), 
 																new RotationModifier((float) 1, -35, 80));
 			this.bird.registerEntityModifier(this.pEntityModifier);
+		}
+	}
+	
+	public void setState(STATE state) {
+		this.state = state;
+		if (state == STATE.DIE) {
+			this.bird.clearEntityModifiers();
+			this.bird.stopAnimation();
 		}
 	}
 	
