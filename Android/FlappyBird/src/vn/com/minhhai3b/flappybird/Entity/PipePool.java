@@ -5,6 +5,12 @@ import java.util.HashMap;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
 
+/**
+ * (c) 2014 Hai Do Minh
+ * 
+ * @author Hai Do Minh
+ */
+
 public class PipePool {
 
 	private static PipePool instance;

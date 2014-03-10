@@ -9,6 +9,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
@@ -21,6 +22,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
+
+/**
+ * (c) 2014 Hai Do Minh
+ * 
+ * @author Hai Do Minh
+ */
 
 public class Bird {
 	
@@ -71,8 +78,9 @@ public class Bird {
 		this.scene.attachChild(this.bird);
 		if (physics) {
 			bird.animate(new long[]{100, 100, 100});
-			this.birdBody = PhysicsFactory.createCircleBody(this.activity.getPhysicsWorld(), this.bird, BodyType.DynamicBody, Bird.FIXTURE_DEF);
-			this.activity.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
+			PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
+			this.birdBody = PhysicsFactory.createCircleBody(physicsWorld, this.bird, BodyType.DynamicBody, Bird.FIXTURE_DEF);
+			physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
 			this.state = STATE.NOT_MOVE;
 		} else {
 			bird.animate(new long[]{150, 150, 150});
@@ -82,9 +90,11 @@ public class Bird {
 	public void jumpUp() {
 		if (this.state == STATE.DOWN || this.state == STATE.NOT_MOVE) {
 			// jump up
-			final Vector2 velocity = Vector2Pool.obtain(0, -4);
-			this.birdBody.setLinearVelocity(velocity);
-			Vector2Pool.recycle(velocity);
+			if (this.bird.getY() >= 4) {
+				Vector2 velocity = Vector2Pool.obtain(0, -4);
+				this.birdBody.setLinearVelocity(velocity);
+				Vector2Pool.recycle(velocity);
+			}
 			if (this.pEntityModifier != null) {
 				this.bird.unregisterEntityModifier(this.pEntityModifier);
 			}

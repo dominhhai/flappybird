@@ -8,6 +8,12 @@ import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
+/**
+ * (c) 2014 Hai Do Minh
+ * 
+ * @author Hai Do Minh
+ */
+
 public class SplashActivity extends Activity {
 	
 	private Handler mHandler;

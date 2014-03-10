@@ -4,6 +4,13 @@ import java.util.Map;
 
 import org.andengine.opengl.texture.Texture;
 
+
+/**
+ * (c) 2014 Hai Do Minh
+ * 
+ * @author Hai Do Minh
+ */
+
 public class GameConfig {
 	
 	private static GameConfig instance;

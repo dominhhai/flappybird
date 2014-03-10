@@ -7,12 +7,24 @@ import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.util.modifier.IModifier;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
+
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+
+/**
+ * (c) 2014 Hai Do Minh
+ * 
+ * @author Hai Do Minh
+ */
 
 public class Pipe implements IEntityModifierListener{
 	
@@ -23,6 +35,8 @@ public class Pipe implements IEntityModifierListener{
 	
 	private Sprite sprTop = null;
 	private Sprite sprBottom = null;
+	private Body sprTopBody = null;
+	private Body sprBottomBody = null;
 	
 	private MainGameActivity activity;
 	private int type;
@@ -43,6 +57,11 @@ public class Pipe implements IEntityModifierListener{
 		float pbottom = top + range;		
 		this.sprTop = new Sprite(px, ptop, upRegion, activity.getVertexBufferObjectManager());
 		this.sprBottom = new Sprite(px, pbottom, downRegion, activity.getVertexBufferObjectManager());
+		PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
+		this.sprTopBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprTop, BodyType.DynamicBody, MainGameActivity.wallFixtureDef);
+		this.sprBottomBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprBottom, BodyType.DynamicBody, MainGameActivity.wallFixtureDef);
+		physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprTop, this.sprTopBody, true, false));
+		physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprBottom, this.sprBottomBody, true, false));
 	}
 	
 	public Sprite getTopSprite() {
@@ -51,6 +70,14 @@ public class Pipe implements IEntityModifierListener{
 	
 	public Sprite getBottomSprite() {
 		return this.sprBottom;
+	}
+	
+	public Body getTopSpriteBody() {
+		return this.sprTopBody;
+	}
+	
+	public Body getBottomSpriteBody() {
+		return this.sprBottomBody;
 	}
 	
 	public int getType() {
