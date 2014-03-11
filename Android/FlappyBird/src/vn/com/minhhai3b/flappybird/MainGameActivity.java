@@ -39,7 +39,6 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import vn.com.minhhai3b.flappybird.Entity.Bird;
 import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
 import vn.com.minhhai3b.flappybird.Entity.Pipe;
-import vn.com.minhhai3b.flappybird.Entity.PipePool;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
 
 import com.badlogic.gdx.math.Vector2;
@@ -189,19 +188,27 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		}
 		
 		return atlasInfo;
-	}
-	
-	float lastPosX = 0;
+	}	
 	
 	public float[] genPipePosition(float pipeH) {
+		float lastPosX = 0;
+		for (Pipe pipe : this.activePipe) {
+			float pipeX = pipe.getTopSprite().getX();
+			if (pipeX > 0 && pipeX > lastPosX) {
+				lastPosX = pipeX;
+			}
+		}
 		float[] pos = new float[3]; // px, top, range
 		// R = [70, 150]
 		// ht = [10, Ht]
 		// X = 150
 		float lastX = lastPosX == 0 ? CAMERA_WIDTH : lastPosX;
-		pos[0] = lastPosX = lastX + random.nextInt(50) + 150;
-		pos[1] = random.nextFloat() * (pipeH - 60) + 40;
-		pos[2] = random.nextFloat() * 80 + 70;
+		pos[0] = lastPosX = lastX + random.nextInt(50) + 200;
+		pos[1] = random.nextFloat() * (pipeH - 60) + 60;
+		pos[2] = random.nextFloat() * (120 - 70) + 70;
+		if (pos[1] + pos[2] + pipeH < REAL_HEIGHT) {
+			pos[2] = REAL_HEIGHT - (pos[1] + pipeH);
+		}
 		return pos;
 	}
 	
@@ -285,7 +292,6 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		
 		int[] footerInfo = this.atlasInfo.get("land");
 		TextureRegion footerRegion = new TextureRegion(this.atlas, footerInfo[2], footerInfo[3], footerInfo[0], footerInfo[1]);
-//		int footerY = footerInfo[1] * 3 / 4;
 		REAL_HEIGHT = CAMERA_HEIGHT - footerInfo[1] * 3 / 4;
 		final Sprite footer = new Sprite(0, REAL_HEIGHT, footerRegion, this.getVertexBufferObjectManager());
 		hud.attachChild(footer);
@@ -310,7 +316,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		
 		for (int i = 0; i < 3; i ++) {
 			float pos[] = genPipePosition(320);
-			Pipe pipe = PipePool.getInstance().getPipe(MainGameActivity.this, 0, pos[0], pos[1], pos[2]);
+			Pipe pipe = new Pipe(MainGameActivity.this, 0, pos[0], pos[1], pos[2]);
 			pipe.attachToScene(scene);
 			this.activePipe.add(pipe);
 		}

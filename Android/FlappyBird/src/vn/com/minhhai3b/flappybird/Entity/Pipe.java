@@ -1,7 +1,6 @@
 package vn.com.minhhai3b.flappybird.Entity;
 
 import java.util.Map;
-import java.util.Random;
 
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.Scene;
@@ -120,11 +119,11 @@ public class Pipe {
 			
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
-				if (Pipe.this.sprBottom.getX() < - Pipe.this.sprBottom.getWidth()) {
+				if (Pipe.this.sprBottom.getX() < - Pipe.this.sprBottom.getWidth()) {					
 					float[] pos = activity.genPipePosition(Pipe.this.sprTop.getHeight());
-					float x = pos[0] / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT; 
-					float y1 = (pos[1] - Pipe.this.sprTop.getHeight()) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
-					float y2 = (pos[1] + pos[2]) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+					float x = pos[0] / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;					
+					float y1 = (pos[1] - Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+					float y2 = (pos[1] + pos[2] + Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
 					Pipe.this.sprTopBody.setTransform(x, y1, Pipe.this.sprTopBody.getAngle());
 					Pipe.this.sprBottomBody.setTransform(x, y2, Pipe.this.sprBottomBody.getAngle());
 					Vector2 velocity = Vector2Pool.obtain(pipeVec, 0);
