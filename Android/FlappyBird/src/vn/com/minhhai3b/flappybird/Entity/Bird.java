@@ -81,7 +81,7 @@ public class Bird {
 		if (physics) {
 			bird.animate(new long[]{100, 100, 100});
 			PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
-			final Rectangle birdRec = new Rectangle(x + 9, y + 9, 30, 30, this.activity.getVertexBufferObjectManager());
+			final Rectangle birdRec = new Rectangle(x + 9, y + 9, 20, 20, this.activity.getVertexBufferObjectManager());
 			this.birdBody = PhysicsFactory.createCircleBody(physicsWorld, birdRec, BodyType.DynamicBody, Bird.FIXTURE_DEF);
 			this.birdBody.setUserData(Bird.BIRD);
 			physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));

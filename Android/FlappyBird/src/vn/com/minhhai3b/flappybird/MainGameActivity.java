@@ -24,7 +24,6 @@ import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
@@ -208,7 +207,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		float lastX = lastPosX == 0 ? CAMERA_WIDTH : lastPosX;
 		pos[0] = lastPosX = lastX + random.nextInt(50) + 200;
 		pos[1] = random.nextFloat() * (pipeH - 60) + 60;
-		pos[2] = random.nextFloat() * (120 - 75) + 75;
+		pos[2] = random.nextFloat() * (120 - 55) + 55;
 		if (pos[1] + pos[2] + pipeH < REAL_HEIGHT) {
 			pos[2] = REAL_HEIGHT - (pos[1] + pipeH);
 		}

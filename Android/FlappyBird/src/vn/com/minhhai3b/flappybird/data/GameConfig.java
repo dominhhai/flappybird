@@ -15,7 +15,7 @@ public class GameConfig {
 	
 	private static GameConfig instance;
 	
-	public static final float VELOCITY = (float) 60.0;
+	public static final float VELOCITY = (float) 80.0;
 	
 	public static GameConfig getInstance() {
 		if (instance == null) {
