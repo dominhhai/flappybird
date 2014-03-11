@@ -15,6 +15,8 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
+import org.andengine.entity.modifier.AlphaModifier;
+import org.andengine.entity.modifier.ColorModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.MoveYModifier;
@@ -31,9 +33,11 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.vbo.DrawType;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
+import org.andengine.util.color.Color;
 
 import vn.com.minhhai3b.flappybird.Entity.Bird;
 import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
@@ -318,7 +322,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			Pipe pipe = new Pipe(MainGameActivity.this, 0, pos[0], pos[1], pos[2]);
 			pipe.attachToScene(scene);
 			this.activePipe.add(pipe);
-		}
+		}		
 		
 		// Event Listener
 		this.mPhysicsWorld.setContactListener(new ContactListener() {
@@ -353,6 +357,13 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	            	// physicsworld destroy
 	            	MainGameActivity.this.destroyWorld = true;
 	            	// scene color
+	            	Rectangle dieEffect = new Rectangle(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, MainGameActivity.this.getVertexBufferObjectManager());
+	            	dieEffect.setAlpha(0);
+	        		dieEffect.registerEntityModifier(new SequenceEntityModifier(
+	        				new AlphaModifier(0.25f, dieEffect.getAlpha(), 1)
+	        				, new AlphaModifier(0.2f, dieEffect.getAlpha(), 0)
+	        				));
+	        		scene.attachChild(dieEffect);
 	            }
 			}
 		});
