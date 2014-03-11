@@ -1,6 +1,7 @@
 package vn.com.minhhai3b.flappybird.Entity;
 
 import java.util.Map;
+import java.util.Random;
 
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.Scene;
@@ -105,7 +106,7 @@ public class Pipe {
 		this.sprBottomBody.setActive(true);
 		scene.attachChild(this.sprTop);
 		scene.attachChild(this.sprBottom);
-		float pipeVec = - GameConfig.VELOCITY / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+		final float pipeVec = - GameConfig.VELOCITY / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
 		Vector2 velocity = Vector2Pool.obtain(pipeVec, 0);
 		this.sprBottomBody.setLinearVelocity(velocity);
 		this.sprTopBody.setLinearVelocity(velocity);
@@ -120,7 +121,16 @@ public class Pipe {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				if (Pipe.this.sprBottom.getX() < - Pipe.this.sprBottom.getWidth()) {
-					PipePool.getInstance().releasePipe(Pipe.this);
+					float[] pos = activity.genPipePosition(Pipe.this.sprTop.getHeight());
+					float x = pos[0] / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT; 
+					float y1 = (pos[1] - Pipe.this.sprTop.getHeight()) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+					float y2 = (pos[1] + pos[2]) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+					Pipe.this.sprTopBody.setTransform(x, y1, Pipe.this.sprTopBody.getAngle());
+					Pipe.this.sprBottomBody.setTransform(x, y2, Pipe.this.sprBottomBody.getAngle());
+					Vector2 velocity = Vector2Pool.obtain(pipeVec, 0);
+					Pipe.this.sprBottomBody.setLinearVelocity(velocity);
+					Pipe.this.sprTopBody.setLinearVelocity(velocity);
+					Vector2Pool.recycle(velocity);
 				}
 			}
 		});
@@ -135,7 +145,11 @@ public class Pipe {
 	}
 	
 	public void pause() {
-		this.sprTopBody.setActive(false);
-		this.sprBottomBody.setActive(false);
+//		this.sprTopBody.setActive(false);
+//		this.sprBottomBody.setActive(false);
+		Vector2 velocity = Vector2Pool.obtain(0, 0);
+		Pipe.this.sprBottomBody.setLinearVelocity(velocity);
+		Pipe.this.sprTopBody.setLinearVelocity(velocity);
+		Vector2Pool.recycle(velocity);
 	}
 }

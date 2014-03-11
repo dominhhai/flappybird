@@ -122,6 +122,10 @@ public class Bird {
 		}
 	}
 	
+	public STATE getState() {
+		return this.state;
+	}
+	
 	public AnimatedSprite getBird() {
 		return this.bird;
 	}

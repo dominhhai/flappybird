@@ -12,6 +12,7 @@ import java.util.Random;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
@@ -40,7 +41,6 @@ import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
 import vn.com.minhhai3b.flappybird.Entity.Pipe;
 import vn.com.minhhai3b.flappybird.Entity.PipePool;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
-import android.view.KeyEvent;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -62,6 +62,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 
 	public static final int CAMERA_WIDTH = 288;
 	public static final int CAMERA_HEIGHT = 512;
+	public static int REAL_HEIGHT = 0;
 	
 	public static final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0);
 
@@ -100,6 +101,10 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	
 	public PhysicsWorld getPhysicsWorld() {
 		return this.mPhysicsWorld;
+	}
+	
+	public ArrayList<Pipe> getActivePipe() {
+		return this.activePipe;
 	}
 	
 	private void switchScene(final Scene scene) {
@@ -186,6 +191,20 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		return atlasInfo;
 	}
 	
+	float lastPosX = 0;
+	
+	public float[] genPipePosition(float pipeH) {
+		float[] pos = new float[3]; // px, top, range
+		// R = [70, 150]
+		// ht = [10, Ht]
+		// X = 150
+		float lastX = lastPosX == 0 ? CAMERA_WIDTH : lastPosX;
+		pos[0] = lastPosX = lastX + random.nextInt(50) + 150;
+		pos[1] = random.nextFloat() * (pipeH - 60) + 40;
+		pos[2] = random.nextFloat() * 80 + 70;
+		return pos;
+	}
+	
 	/*
 	 * Menu Scene
 	 * @return
@@ -253,8 +272,8 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 * Play Scene
 	 */
 	private Scene createPlayScene() {
-		Scene scene = new Scene();
-		HUD hud = new HUD();
+		final Scene scene = new Scene();
+		final HUD hud = new HUD();
 		this.mCamera.setHUD(hud);
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 20), true);
 		this.destroyWorld = false;
@@ -266,8 +285,9 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		
 		int[] footerInfo = this.atlasInfo.get("land");
 		TextureRegion footerRegion = new TextureRegion(this.atlas, footerInfo[2], footerInfo[3], footerInfo[0], footerInfo[1]);
-		int footerY = footerInfo[1] * 3 / 4; 
-		final Sprite footer = new Sprite(0, CAMERA_HEIGHT - footerY, footerRegion, this.getVertexBufferObjectManager());
+//		int footerY = footerInfo[1] * 3 / 4;
+		REAL_HEIGHT = CAMERA_HEIGHT - footerInfo[1] * 3 / 4;
+		final Sprite footer = new Sprite(0, REAL_HEIGHT, footerRegion, this.getVertexBufferObjectManager());
 		hud.attachChild(footer);
 		float footerMoveDuration = Math.abs(CAMERA_WIDTH - footerInfo[0]) / GameConfig.VELOCITY;
 
@@ -288,8 +308,12 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			this.activePipe.clear();
 		}
 		
-		final Pipe pipe = PipePool.getInstance().getPipe(this, 0, CAMERA_WIDTH, 300, 100);
-		pipe.attachToScene(scene);
+		for (int i = 0; i < 3; i ++) {
+			float pos[] = genPipePosition(320);
+			Pipe pipe = PipePool.getInstance().getPipe(MainGameActivity.this, 0, pos[0], pos[1], pos[2]);
+			pipe.attachToScene(scene);
+			this.activePipe.add(pipe);
+		}
 		
 		// Event Listener
 		this.mPhysicsWorld.setContactListener(new ContactListener() {
@@ -316,11 +340,14 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	            	// pause footer
 	            	footer.clearEntityModifiers();
 	            	// pause Pipe
-	            	pipe.pause();
+	            	for (Pipe pipe : MainGameActivity.this.activePipe) {
+						pipe.pause();
+					}
 	            	// bird die
 	            	bird.setState(STATE.DIE, (b1Name == null || b2Name == null));
 	            	// physicsworld destroy
 	            	MainGameActivity.this.destroyWorld = true;
+	            	// scene color
 	            }
 			}
 		});
@@ -348,7 +375,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 							localException.printStackTrace();
 						}
 					}
-					MainGameActivity.this.destroyWorld = false;
+					MainGameActivity.this.destroyWorld = false;			
 				}
 			}
 		});
