@@ -24,6 +24,7 @@ import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
@@ -362,6 +363,8 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		final Sprite tutorial = new Sprite((CAMERA_WIDTH - tutorialInfo[0]) / 2, tutorialY, tutorialRegion, this.getVertexBufferObjectManager());
 		scene.attachChild(readyText);
 		scene.attachChild(tutorial);
+		// pause/ resume
+		
 		// Event Listener
 		this.mPhysicsWorld.setContactListener(new ContactListener() {
 			
