@@ -94,8 +94,11 @@ public class Bird {
 	public void jumpUp() {
 		if (this.state == STATE.DOWN || this.state == STATE.NOT_MOVE) {
 			// jump up
-			if (this.bird.getY() >= 4) {
-				Vector2 velocity = Vector2Pool.obtain(0, -4);
+			float curVecY = this.birdBody.getLinearVelocity().y;
+			curVecY = curVecY >= -3 ? -4 : curVecY - 0.75f;
+			
+			if (this.bird.getY() >= - curVecY) {
+				Vector2 velocity = Vector2Pool.obtain(0, curVecY);
 				this.birdBody.setLinearVelocity(velocity);
 				Vector2Pool.recycle(velocity);
 			}

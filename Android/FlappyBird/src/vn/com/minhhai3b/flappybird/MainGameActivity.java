@@ -12,7 +12,6 @@ import java.util.Random;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
@@ -205,7 +204,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		float lastX = lastPosX == 0 ? CAMERA_WIDTH : lastPosX;
 		pos[0] = lastPosX = lastX + random.nextInt(50) + 200;
 		pos[1] = random.nextFloat() * (pipeH - 60) + 60;
-		pos[2] = random.nextFloat() * (120 - 70) + 70;
+		pos[2] = random.nextFloat() * (120 - 75) + 75;
 		if (pos[1] + pos[2] + pipeH < REAL_HEIGHT) {
 			pos[2] = REAL_HEIGHT - (pos[1] + pipeH);
 		}
