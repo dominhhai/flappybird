@@ -45,6 +45,8 @@ public class Pipe {
 	private MainGameActivity activity;
 	private int type;
 	
+	private boolean birdPass = false;
+	
 	public Pipe(MainGameActivity activity, int type, float px, float top, float range) {
 		this.activity = activity;
 		this.type = type;
@@ -69,6 +71,8 @@ public class Pipe {
 
 		physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprTop, this.sprTopBody, true, false));
 		physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprBottom, this.sprBottomBody, true, false));
+		
+		this.birdPass = false;
 	}
 	
 	public Sprite getTopSprite() {
@@ -104,12 +108,7 @@ public class Pipe {
 		this.sprTopBody.setActive(true);
 		this.sprBottomBody.setActive(true);
 		scene.attachChild(this.sprTop);
-		scene.attachChild(this.sprBottom);
-		final float pipeVec = - GameConfig.VELOCITY / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
-		Vector2 velocity = Vector2Pool.obtain(pipeVec, 0);
-		this.sprBottomBody.setLinearVelocity(velocity);
-		this.sprTopBody.setLinearVelocity(velocity);
-		Vector2Pool.recycle(velocity);
+		scene.attachChild(this.sprBottom);		
 
 		this.sprBottom.registerUpdateHandler(new IUpdateHandler() {
 			
@@ -126,13 +125,21 @@ public class Pipe {
 					float y2 = (pos[1] + pos[2] + Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
 					Pipe.this.sprTopBody.setTransform(x, y1, Pipe.this.sprTopBody.getAngle());
 					Pipe.this.sprBottomBody.setTransform(x, y2, Pipe.this.sprBottomBody.getAngle());
-					Vector2 velocity = Vector2Pool.obtain(pipeVec, 0);
-					Pipe.this.sprBottomBody.setLinearVelocity(velocity);
-					Pipe.this.sprTopBody.setLinearVelocity(velocity);
-					Vector2Pool.recycle(velocity);
+					birdPass = false;
+				} else if (Pipe.this.sprBottom.getX() + Pipe.this.sprBottom.getWidth() < MainGameActivity.CAMERA_WIDTH / 4 && !birdPass) {
+					activity.increateScore();
+					birdPass = true;
 				}
 			}
 		});
+	}
+	
+	public void action() {
+		final float pipeVec = - GameConfig.VELOCITY / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+		Vector2 velocity = Vector2Pool.obtain(pipeVec, 0);
+		this.sprBottomBody.setLinearVelocity(velocity);
+		this.sprTopBody.setLinearVelocity(velocity);
+		Vector2Pool.recycle(velocity);
 	}
 	
 	public void detachFromScene() {

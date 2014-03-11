@@ -16,10 +16,10 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.modifier.AlphaModifier;
-import org.andengine.entity.modifier.ColorModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.MoveYModifier;
+import org.andengine.entity.modifier.ScaleModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -33,11 +33,9 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.TextureRegion;
-import org.andengine.opengl.vbo.DrawType;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
-import org.andengine.util.color.Color;
 
 import vn.com.minhhai3b.flappybird.Entity.Bird;
 import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
@@ -78,6 +76,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	private Random random = new Random();
 	private ArrayList<Pipe> activePipe;
 	private boolean destroyWorld = false;
+	private int score = 0;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -278,6 +277,33 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		return scene;
 	}
 	
+	public void increateScore() {
+		this.score ++;
+		System.err.println("score: " + this.score);
+	}
+	 
+	private void gameOverEffect(final Scene scene) {
+		Rectangle dieEffect = new Rectangle(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, this.getVertexBufferObjectManager());
+    	dieEffect.setAlpha(0);
+		dieEffect.registerEntityModifier(new SequenceEntityModifier(
+				new AlphaModifier(0.25f, dieEffect.getAlpha(), 1)
+				, new AlphaModifier(0.2f, dieEffect.getAlpha(), 0)
+				));
+		scene.attachChild(dieEffect);
+		int[] gameOverTextInfo = this.atlasInfo.get("text_game_over");
+		TextureRegion gameOverTextRegion = new TextureRegion(this.atlas, gameOverTextInfo[2], gameOverTextInfo[3], gameOverTextInfo[0], gameOverTextInfo[1]);
+		int[] scorePanelInfo = this.atlasInfo.get("score_panel");
+		TextureRegion scorePanelRegion = new TextureRegion(this.atlas, scorePanelInfo[2], scorePanelInfo[3], scorePanelInfo[0], scorePanelInfo[1]);
+		float scorePanelY = CAMERA_HEIGHT / 2 - scorePanelInfo[1] / 4;
+		float gameOverTextY = scorePanelY - gameOverTextInfo[1] - 30;
+		Sprite gameOverText = new Sprite((CAMERA_WIDTH - gameOverTextInfo[0]) / 2, gameOverTextY, gameOverTextRegion, this.getVertexBufferObjectManager());
+		Sprite scorePanel = new Sprite((CAMERA_WIDTH - scorePanelInfo[0]) / 2, CAMERA_HEIGHT, scorePanelRegion, this.getVertexBufferObjectManager());
+		gameOverText.registerEntityModifier(new ScaleModifier(0.5f, 0, 1));
+		scorePanel.registerEntityModifier(new MoveYModifier(0.8f, scorePanel.getY(), scorePanelY));
+		scene.attachChild(gameOverText);
+		scene.attachChild(scorePanel);
+	}
+	
 	/*
 	 * Play Scene
 	 */
@@ -287,6 +313,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		this.mCamera.setHUD(hud);
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 20), true);
 		this.destroyWorld = false;
+		this.score = 0;
 		
 		int[] bgInfo = this.atlasInfo.get((this.random.nextInt(2) == 0) ? "bg_day" : "bg_night");
 		TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
@@ -309,7 +336,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
 		
 		// character
-		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3), CAMERA_WIDTH >>> 1, CAMERA_HEIGHT >>> 1);
+		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3), CAMERA_WIDTH / 4, CAMERA_HEIGHT / 2 - 40);
 		
 		if (this.activePipe == null) {
 			this.activePipe = new ArrayList<Pipe>();
@@ -322,8 +349,19 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			Pipe pipe = new Pipe(MainGameActivity.this, 0, pos[0], pos[1], pos[2]);
 			pipe.attachToScene(scene);
 			this.activePipe.add(pipe);
-		}		
+		}
 		
+		// tutorial
+		int[] readyTextInfo = this.atlasInfo.get("text_ready");
+		TextureRegion readyTextRegion = new TextureRegion(this.atlas, readyTextInfo[2], readyTextInfo[3], readyTextInfo[0], readyTextInfo[1]);
+		int[] tutorialInfo = this.atlasInfo.get("tutorial");
+		TextureRegion tutorialRegion = new TextureRegion(this.atlas, tutorialInfo[2], tutorialInfo[3], tutorialInfo[0], tutorialInfo[1]);
+		float tutorialY = (CAMERA_HEIGHT - tutorialInfo[1]) / 2;
+		float readyTextY = tutorialY - readyTextInfo[1] - 10;
+		final Sprite readyText = new Sprite((CAMERA_WIDTH - readyTextInfo[0]) / 2, readyTextY, readyTextRegion, this.getVertexBufferObjectManager());
+		final Sprite tutorial = new Sprite((CAMERA_WIDTH - tutorialInfo[0]) / 2, tutorialY, tutorialRegion, this.getVertexBufferObjectManager());
+		scene.attachChild(readyText);
+		scene.attachChild(tutorial);
 		// Event Listener
 		this.mPhysicsWorld.setContactListener(new ContactListener() {
 			
@@ -340,12 +378,19 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			}
 			
 			@Override
-			public void beginContact(Contact contact) {
+			public void beginContact(Contact contact) {				
 				final Body b1 = contact.getFixtureA().getBody();
 	            final Body b2 = contact.getFixtureB().getBody();
 	            final String b1Name = (String) b1.getUserData();
 	            final String b2Name = (String) b2.getUserData();
 	            if ((b1Name !=null && b1Name.equals(Bird.BIRD)) || (b2Name !=null && b2Name.equals(Bird.BIRD))) {
+	            	boolean groundCollision = b1Name == null || b2Name == null;
+	            	if (bird.getState() == STATE.DIE) {
+	            		if (groundCollision) {
+		            		bird.pause();
+		            	}
+		            	return;
+	            	}
 	            	// pause footer
 	            	footer.clearEntityModifiers();
 	            	// pause Pipe
@@ -357,13 +402,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	            	// physicsworld destroy
 	            	MainGameActivity.this.destroyWorld = true;
 	            	// scene color
-	            	Rectangle dieEffect = new Rectangle(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, MainGameActivity.this.getVertexBufferObjectManager());
-	            	dieEffect.setAlpha(0);
-	        		dieEffect.registerEntityModifier(new SequenceEntityModifier(
-	        				new AlphaModifier(0.25f, dieEffect.getAlpha(), 1)
-	        				, new AlphaModifier(0.2f, dieEffect.getAlpha(), 0)
-	        				));
-	        		scene.attachChild(dieEffect);
+	            	MainGameActivity.this.gameOverEffect(scene);
 	            }
 			}
 		});
@@ -400,7 +439,17 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			
 			@Override
 			public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-				bird.jumpUp();
+				if (bird.getState() == STATE.NOT_MOVE) {
+					readyText.detachSelf();
+					tutorial.detachSelf();
+					
+					bird.setState(STATE.DOWN, false);
+					for (Pipe pipe : MainGameActivity.this.activePipe) {
+						pipe.action();
+					}
+				} else {
+					bird.jumpUp();
+				}
 				return false;
 			}
 		});

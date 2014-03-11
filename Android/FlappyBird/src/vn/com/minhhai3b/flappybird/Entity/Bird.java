@@ -86,9 +86,11 @@ public class Bird {
 			this.birdBody.setUserData(Bird.BIRD);
 			physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
 			this.state = STATE.NOT_MOVE;
+			this.birdBody.setActive(false);
 		} else {
 			bird.animate(new long[]{150, 150, 150});
-		}		
+		}
+				
 	}
 	
 	public void jumpUp() {
@@ -117,12 +119,18 @@ public class Bird {
 		if (state == STATE.DIE) {
 			this.bird.clearEntityModifiers();
 			if (collisionGround) {
-				this.bird.stopAnimation();
-				this.birdBody.setActive(false);	
+				this.pause();
 			} else {			
 				this.bird.registerEntityModifier(new RotationModifier(1, this.bird.getRotation(), 80));
 			}
+		} else if (state == STATE.DOWN) {
+			this.birdBody.setActive(true);
 		}
+	}
+	
+	public void pause() {
+		this.bird.stopAnimation();
+		this.birdBody.setActive(false);	
 	}
 	
 	public STATE getState() {
