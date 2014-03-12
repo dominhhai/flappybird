@@ -16,7 +16,6 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.modifier.AlphaModifier;
-import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.MoveYModifier;
@@ -226,15 +225,11 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		final int[] titleInfo = this.atlasInfo.get("title");
 		final int[] charInfo_0 = this.atlasInfo.get("bird0_0");
 		TextureRegion titleRegion = new TextureRegion(this.atlas, titleInfo[2], titleInfo[3], titleInfo[0], titleInfo[1]);
-		Sprite title = new Sprite((CAMERA_WIDTH - titleInfo[0] - 5 - charInfo_0[0]) >>> 1, (CAMERA_HEIGHT - titleInfo[1]) >>> 1, titleRegion, this.getVertexBufferObjectManager());				
-		Bird bird = new Bird(this, scene, false,2, ((CAMERA_WIDTH + titleInfo[0] - 5 - charInfo_0[0]) >>> 1) + 5, (CAMERA_HEIGHT - charInfo_0[1]) >>> 1);
-		title.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
-				new MoveYModifier((float)0.5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 20, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 5),
-				new MoveYModifier((float)0.5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 5, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 20))));
-		bird.getBird().registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
-				new MoveYModifier((float)0.6, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 30, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 10),
-				new MoveYModifier((float)0.6, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) + 10, ((CAMERA_HEIGHT - titleInfo[1]) >>> 1) - 30))));		
+		float titleY = (CAMERA_HEIGHT - titleInfo[1]) / 2;
+		Sprite title = new Sprite((CAMERA_WIDTH - titleInfo[0] - 5 - charInfo_0[0]) / 2, titleY, titleRegion, this.getVertexBufferObjectManager());						
+		title.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveYModifier(0.5f, titleY - 20, titleY + 5), new MoveYModifier(0.5f, titleY + 5, titleY - 20))));
 		scene.attachChild(title);
+		new Bird(this, scene, false,2, ((CAMERA_WIDTH + titleInfo[0] - 5 - charInfo_0[0]) >>> 1) + 5, (CAMERA_HEIGHT - charInfo_0[1]) >>> 1);
 		
 		final int[] btnPlayInfo = this.atlasInfo.get("button_play");
 		final int[] btnScoreInfo = this.atlasInfo.get("button_score");
@@ -392,7 +387,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
 		
 		// character
-		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3));
+		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3));		
 		
 		if (this.activePipe == null) {
 			this.activePipe = new ArrayList<Pipe>();

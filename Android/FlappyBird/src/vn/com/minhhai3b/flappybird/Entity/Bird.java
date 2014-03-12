@@ -3,6 +3,8 @@ package vn.com.minhhai3b.flappybird.Entity;
 import java.util.Map;
 
 import org.andengine.entity.modifier.IEntityModifier;
+import org.andengine.entity.modifier.LoopEntityModifier;
+import org.andengine.entity.modifier.MoveYModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
@@ -93,8 +95,12 @@ public class Bird {
 			physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
 			this.state = STATE.NOT_MOVE;
 			this.birdBody.setActive(false);
+			// fly
+			this.bird.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveYModifier(0.4f, y - 5, y + 5), new MoveYModifier(0.4f, y + 5, y - 5))));
 		} else {
-			bird.animate(new long[]{150, 150, 150});
+			this.bird.animate(new long[]{150, 150, 150});
+			// fly
+			this.bird.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveYModifier(0.6f, y - 30, y + 10), new MoveYModifier(0.6f, y + 10, y - 30))));
 		}
 				
 	}
@@ -130,6 +136,7 @@ public class Bird {
 				this.bird.registerEntityModifier(new RotationModifier(1, this.bird.getRotation(), 80));
 			}
 		} else if (state == STATE.DOWN) {
+			this.bird.clearEntityModifiers();
 			this.birdBody.setActive(true);
 		}
 	}
