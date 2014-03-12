@@ -314,6 +314,21 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		final Sprite scorePanel = new Sprite((CAMERA_WIDTH - scorePanelInfo[0]) / 2, CAMERA_HEIGHT, scorePanelRegion, this.getVertexBufferObjectManager());
 		gameOverText.registerEntityModifier(new ScaleModifier(0.5f, 0, 1));
 		scorePanel.registerEntityModifier(new MoveYModifier(0.8f, scorePanel.getY(), scorePanelY));
+		// score and medal
+		int[] medalInfo_0 = this.atlasInfo.get("medals_0");
+		int[] medalInfo_1 = this.atlasInfo.get("medals_2");
+		TiledTextureRegion medalRegion = new TiledTextureRegion(atlas, 
+				new TextureRegion(atlas, medalInfo_0[2], medalInfo_0[3], medalInfo_0[0], medalInfo_0[1]), 
+				new TextureRegion(atlas, medalInfo_1[2], medalInfo_1[3], medalInfo_1[0], medalInfo_1[1]));
+		AnimatedSprite medal = new AnimatedSprite(31, 46, medalRegion, this.getVertexBufferObjectManager());
+		medal.animate(150);
+		int[] newInfo = this.atlasInfo.get("new");
+		float newSprX = 150;
+		float newSprY = 60;
+		Sprite newSpr = new Sprite(newSprX, newSprY, new TextureRegion(atlas, newInfo[2], newInfo[3], newInfo[0], newInfo[1]), this.getVertexBufferObjectManager());
+		scorePanel.attachChild(newSpr);
+		scorePanel.attachChild(medal);
+		// attach to scene
 		scene.attachChild(gameOverText);
 		scene.attachChild(scorePanel);
 		
