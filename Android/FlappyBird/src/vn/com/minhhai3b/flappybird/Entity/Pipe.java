@@ -146,8 +146,8 @@ public class Pipe {
 		Vector2Pool.recycle(velocity);
 	}
 	
-	public void preReset() {
-		this.sprTopBody.setTransform(-1, this.sprTopBody.getPosition().y, Pipe.this.sprTopBody.getAngle());
+	public void resume() {
+		this.action();
 	}
 	
 	public void reset() {

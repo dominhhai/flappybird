@@ -17,7 +17,6 @@ import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.IEntityModifier;
-import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.MoveYModifier;
@@ -26,6 +25,7 @@ import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
@@ -35,6 +35,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
@@ -43,6 +44,7 @@ import vn.com.minhhai3b.flappybird.Entity.Bird;
 import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
 import vn.com.minhhai3b.flappybird.Entity.Pipe;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
+import android.view.KeyEvent;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -66,6 +68,10 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	public static final int CAMERA_HEIGHT = 512;
 	public static int REAL_HEIGHT = 0;
 	
+	public static final String SCENE_MENU = "SCENE_MENU";
+	public static final String SCENE_PLAY = "SCENE_PLAY";
+	public static final String SCENE_SCORE = "SCENE_SCORE";
+	
 	public static final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0);
 
 	private Camera mCamera = null;
@@ -79,15 +85,6 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	private ArrayList<Pipe> activePipe;
 	private boolean destroyWorld = false;
 	private int score = 0;
-//	private Bird bird;
-//	private Sprite tutorial;
-//	private Sprite readyText;
-//	private Sprite footer;
-//	private IEntityModifier footerModifier;
-//	private ButtonSprite btnPlay;
-//	private ButtonSprite btnScore;
-//	private Sprite gameOverText;
-//	private Sprite scorePanel;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -208,7 +205,8 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 * @return
 	 */
 	private Scene createMenuScene() {
-		Scene scene = new Scene();
+		Scene scene = new Scene();		
+		scene.setUserData(SCENE_MENU);
 		
 		int[] bgInfo = this.atlasInfo.get("bg_day");
 		TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
@@ -351,6 +349,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 */
 	private Scene createPlayScene() {
 		final Scene scene = new Scene();
+		scene.setUserData(SCENE_PLAY);
 		final HUD hud = new HUD();
 		this.mCamera.setHUD(hud);
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 20), true);
@@ -368,8 +367,9 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		final Sprite footer = new Sprite(0, REAL_HEIGHT, footerRegion, this.getVertexBufferObjectManager());
 		hud.attachChild(footer);
 		float footerMoveDuration = Math.abs(CAMERA_WIDTH - footerInfo[0]) / GameConfig.VELOCITY;
-		footer.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
-				new MoveXModifier(footerMoveDuration, 0, CAMERA_WIDTH - footerInfo[0]))));
+		final LoopEntityModifier footerModifier = new LoopEntityModifier(new SequenceEntityModifier(
+				new MoveXModifier(footerMoveDuration, 0, CAMERA_WIDTH - footerInfo[0])));
+		footer.registerEntityModifier(footerModifier);
 		
 		final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
 		final Rectangle ground = new Rectangle(0, footer.getY(), CAMERA_WIDTH, 2, vertexBufferObjectManager);		
@@ -404,7 +404,35 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		scene.attachChild(readyText);
 		scene.attachChild(tutorial);
 		// pause/ resume
-		
+		final int[] pauseInfo = atlasInfo.get("button_pause");
+		final int[] resumeInfo = atlasInfo.get("button_resume");
+		TextureRegion pauseRegion = new TextureRegion(atlas, pauseInfo[2], pauseInfo[3], pauseInfo[0], pauseInfo[1]);
+		TextureRegion resumeRegion = new TextureRegion(atlas, resumeInfo[2], resumeInfo[3], resumeInfo[0], resumeInfo[1]);
+		TiledTextureRegion charRegion = new TiledTextureRegion(atlas, pauseRegion, resumeRegion);
+		final AnimatedSprite pauseResumeBtn = new AnimatedSprite(10, 10, charRegion, this.getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN && bird.getState() != STATE.NOT_MOVE && bird.getState() != STATE.DIE) {
+					if (this.getCurrentTileIndex() == 0) { // pause
+						for (Pipe pipe : MainGameActivity.this.activePipe) {	
+							pipe.pause();
+						}
+						bird.pause();
+						footer.unregisterEntityModifier(footerModifier);
+						this.setCurrentTileIndex(1);
+					} else { // resume
+						bird.resume();
+						for (Pipe pipe : MainGameActivity.this.activePipe) {	
+							pipe.resume();
+						}
+						footer.registerEntityModifier(footerModifier);
+						this.setCurrentTileIndex(0);
+					}
+				}
+				return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+			}
+		};		
 		// Event Listener
 		this.mPhysicsWorld.setContactListener(new ContactListener() {
 			
@@ -446,6 +474,8 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	            	MainGameActivity.this.destroyWorld = true;
 	            	// scene color
 	            	MainGameActivity.this.gameOverEffect(scene);
+	            	scene.detachChild(pauseResumeBtn);
+	        		scene.unregisterTouchArea(pauseResumeBtn);
 	            }
 			}
 		});
@@ -475,7 +505,6 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 					}
 					mEngine.getScene().unregisterUpdateHandler(mPhysicsWorld);
 					MainGameActivity.this.destroyWorld = false;
-					System.out.println("destroy world ok");
 				}
 			}
 		});
@@ -492,9 +521,11 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 					for (Pipe pipe : MainGameActivity.this.activePipe) {
 						pipe.action();
 					}
-				} else {
-					bird.jumpUp();
+					
+					scene.attachChild(pauseResumeBtn);
+					scene.registerTouchArea(pauseResumeBtn);
 				}
+				bird.jumpUp();
 				return false;
 			}
 		});
@@ -506,12 +537,19 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	 * 
 	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
 	 */
-//	@Override
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		if(keyCode == KeyEvent.KEYCODE_BACK) {
-//			return true;
-//		}
-//		return super.onKeyDown(keyCode, event);
-//	}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK) {
+//			String curScene = (String) mEngine.getScene().getUserData();
+//			if (curScene.equals(SCENE_MENU)) {
+//				return true;
+//			} else if (curScene.equals(SCENE_PLAY)) {
+//				
+//			} else {
+//			}
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 	
 }

@@ -100,7 +100,7 @@ public class Bird {
 	}
 	
 	public void jumpUp() {
-		if (this.state == STATE.DOWN || this.state == STATE.NOT_MOVE) {
+		if (this.birdBody.isActive() && (this.state == STATE.DOWN || this.state == STATE.NOT_MOVE)) {
 			// jump up
 			float curVecY = this.birdBody.getLinearVelocity().y;
 			curVecY = curVecY >= -3 ? -4 : curVecY - 0.75f;
@@ -136,7 +136,13 @@ public class Bird {
 	
 	public void pause() {
 		this.bird.stopAnimation();
+		this.bird.clearEntityModifiers();
 		this.birdBody.setActive(false);	
+	}
+	
+	public void resume() {
+		this.bird.animate(new long[]{100, 100, 100});
+		this.birdBody.setActive(true);
 	}
 	
 	public void reset() {
