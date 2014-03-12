@@ -319,9 +319,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		AnimatedSprite medal = new AnimatedSprite(31, 46, medalRegion, this.getVertexBufferObjectManager());
 		medal.animate(150);
 		int[] newInfo = this.atlasInfo.get("new");
-		float newSprX = 150;
-		float newSprY = 60;
-		Sprite newSpr = new Sprite(newSprX, newSprY, new TextureRegion(atlas, newInfo[2], newInfo[3], newInfo[0], newInfo[1]), this.getVertexBufferObjectManager());
+		Sprite newSpr = new Sprite(140, 60, new TextureRegion(atlas, newInfo[2], newInfo[3], newInfo[0], newInfo[1]), this.getVertexBufferObjectManager());
 		scorePanel.attachChild(newSpr);
 		scorePanel.attachChild(medal);
 		// attach to scene
