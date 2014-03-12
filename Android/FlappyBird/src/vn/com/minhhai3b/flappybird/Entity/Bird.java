@@ -12,6 +12,7 @@ import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
@@ -34,6 +35,7 @@ public class Bird {
 	
 	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(200, 0, 0);
 	public static final String BIRD = "BIRD";
+	public static final float[] POSITION = new float[] {MainGameActivity.CAMERA_WIDTH / 4, MainGameActivity.CAMERA_HEIGHT / 2 - 40}; 
 	
 	public final static int[] TYPE = new int[] {0 /*RED*/, 1 /*BLUE*/, 2 /*YELLOW*/};
 	
@@ -52,6 +54,10 @@ public class Bird {
 	private int type = TYPE[0];
 	private STATE state = STATE.NOT_MOVE;
 	private IEntityModifier pEntityModifier;
+	
+	public Bird (MainGameActivity activity, Scene scene, boolean physics, int type) {
+		this(activity, scene, physics, type, POSITION[0], POSITION[1]);
+	}
 	
 	public Bird (MainGameActivity activity, Scene scene, boolean physics, int type, float x, float y) {
 		this.type = type;
@@ -131,6 +137,15 @@ public class Bird {
 	public void pause() {
 		this.bird.stopAnimation();
 		this.birdBody.setActive(false);	
+	}
+	
+	public void reset() {
+		float x = (POSITION[0] + this.bird.getWidth() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;					
+		float y = (POSITION[1] + this.bird.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+		this.birdBody.setTransform(x, y, this.birdBody.getAngle());
+		this.state = STATE.NOT_MOVE;
+		this.bird.setRotation(0);
+		this.bird.animate(new long[]{100, 100, 100});
 	}
 	
 	public STATE getState() {

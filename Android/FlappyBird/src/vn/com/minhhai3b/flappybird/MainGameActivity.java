@@ -16,6 +16,8 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.modifier.AlphaModifier;
+import org.andengine.entity.modifier.IEntityModifier;
+import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.MoveYModifier;
@@ -77,6 +79,15 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	private ArrayList<Pipe> activePipe;
 	private boolean destroyWorld = false;
 	private int score = 0;
+//	private Bird bird;
+//	private Sprite tutorial;
+//	private Sprite readyText;
+//	private Sprite footer;
+//	private IEntityModifier footerModifier;
+//	private ButtonSprite btnPlay;
+//	private ButtonSprite btnScore;
+//	private Sprite gameOverText;
+//	private Sprite scorePanel;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -109,7 +120,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	}
 	
 	private void switchScene(final Scene scene) {
-		if(this.mEngine.getScene() != scene) {
+		if(this.mEngine.getScene() != scene) {			
 			this.mEngine.getScene().postRunnable(new Runnable(){
 				
 				@Override
@@ -190,29 +201,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		}
 		
 		return atlasInfo;
-	}	
-	
-	public float[] genPipePosition(float pipeH) {
-		float lastPosX = 0;
-		for (Pipe pipe : this.activePipe) {
-			float pipeX = pipe.getTopSprite().getX();
-			if (pipeX > 0 && pipeX > lastPosX) {
-				lastPosX = pipeX;
-			}
-		}
-		float[] pos = new float[3]; // px, top, range
-		// R = [70, 150]
-		// ht = [10, Ht]
-		// X = 150
-		float lastX = lastPosX == 0 ? CAMERA_WIDTH : lastPosX;
-		pos[0] = lastPosX = lastX + random.nextInt(50) + 200;
-		pos[1] = random.nextFloat() * (pipeH - 60) + 60;
-		pos[2] = random.nextFloat() * (120 - 55) + 55;
-		if (pos[1] + pos[2] + pipeH < REAL_HEIGHT) {
-			pos[2] = REAL_HEIGHT - (pos[1] + pipeH);
-		}
-		return pos;
-	}
+	}		
 	
 	/*
 	 * Menu Scene
@@ -277,31 +266,84 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		return scene;
 	}
 	
+	public float[] genPipePosition(float pipeH) {
+		float lastPosX = 0;
+		for (Pipe pipe : this.activePipe) {			
+			float pipeX = pipe.getTopSprite().getX();
+			if (pipeX > 0 && pipeX > lastPosX) {
+				lastPosX = pipeX;
+			}
+		}
+		float[] pos = new float[3]; // px, top, range
+		// R = [70, 150]
+		// ht = [10, Ht]
+		// X = 150
+		if (lastPosX == 0) {
+			lastPosX = CAMERA_WIDTH;
+		}
+		pos[0] = lastPosX + random.nextInt(50) + 200;
+		pos[1] = random.nextFloat() * (pipeH - 60) + 60;
+		pos[2] = random.nextFloat() * (120 - 55) + 55;
+		if (pos[1] + pos[2] + pipeH < REAL_HEIGHT) {
+			pos[2] = REAL_HEIGHT - (pos[1] + pipeH);
+		}
+		return pos;
+	}
+	
 	public void increateScore() {
 		this.score ++;
 		System.err.println("score: " + this.score);
 	}
 	 
 	private void gameOverEffect(final Scene scene) {
-		Rectangle dieEffect = new Rectangle(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, this.getVertexBufferObjectManager());
+		final Rectangle dieEffect = new Rectangle(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, this.getVertexBufferObjectManager());
     	dieEffect.setAlpha(0);
 		dieEffect.registerEntityModifier(new SequenceEntityModifier(
 				new AlphaModifier(0.25f, dieEffect.getAlpha(), 1)
 				, new AlphaModifier(0.2f, dieEffect.getAlpha(), 0)
 				));
 		scene.attachChild(dieEffect);
-		int[] gameOverTextInfo = this.atlasInfo.get("text_game_over");
-		TextureRegion gameOverTextRegion = new TextureRegion(this.atlas, gameOverTextInfo[2], gameOverTextInfo[3], gameOverTextInfo[0], gameOverTextInfo[1]);
 		int[] scorePanelInfo = this.atlasInfo.get("score_panel");
-		TextureRegion scorePanelRegion = new TextureRegion(this.atlas, scorePanelInfo[2], scorePanelInfo[3], scorePanelInfo[0], scorePanelInfo[1]);
+		int[] gameOverTextInfo = this.atlasInfo.get("text_game_over");
 		float scorePanelY = CAMERA_HEIGHT / 2 - scorePanelInfo[1] / 4;
 		float gameOverTextY = scorePanelY - gameOverTextInfo[1] - 30;
-		Sprite gameOverText = new Sprite((CAMERA_WIDTH - gameOverTextInfo[0]) / 2, gameOverTextY, gameOverTextRegion, this.getVertexBufferObjectManager());
-		Sprite scorePanel = new Sprite((CAMERA_WIDTH - scorePanelInfo[0]) / 2, CAMERA_HEIGHT, scorePanelRegion, this.getVertexBufferObjectManager());
+		TextureRegion gameOverTextRegion = new TextureRegion(this.atlas, gameOverTextInfo[2], gameOverTextInfo[3], gameOverTextInfo[0], gameOverTextInfo[1]);
+		TextureRegion scorePanelRegion = new TextureRegion(this.atlas, scorePanelInfo[2], scorePanelInfo[3], scorePanelInfo[0], scorePanelInfo[1]);
+
+		final Sprite gameOverText = new Sprite(
+				(CAMERA_WIDTH - gameOverTextInfo[0]) / 2, gameOverTextY,
+				gameOverTextRegion, this.getVertexBufferObjectManager());
+		final Sprite scorePanel = new Sprite((CAMERA_WIDTH - scorePanelInfo[0]) / 2, CAMERA_HEIGHT, scorePanelRegion, this.getVertexBufferObjectManager());
 		gameOverText.registerEntityModifier(new ScaleModifier(0.5f, 0, 1));
 		scorePanel.registerEntityModifier(new MoveYModifier(0.8f, scorePanel.getY(), scorePanelY));
 		scene.attachChild(gameOverText);
 		scene.attachChild(scorePanel);
+		
+		final int[] btnPlayInfo = this.atlasInfo.get("button_play");
+		final int[] btnScoreInfo = this.atlasInfo.get("button_score");
+		TextureRegion btnPlayRegion = new TextureRegion(this.atlas, btnPlayInfo[2], btnPlayInfo[3], btnPlayInfo[0], btnPlayInfo[1]);
+		TextureRegion btnScoreRegion = new TextureRegion(this.atlas, btnScoreInfo[2], btnScoreInfo[3], btnScoreInfo[0], btnScoreInfo[1]);
+		float btnY = scorePanelY + scorePanelInfo[1] + 10;
+		ButtonSprite btnPlay = new ButtonSprite((CAMERA_WIDTH / 2 - btnPlayInfo[0]) / 2, CAMERA_HEIGHT, btnPlayRegion, this.getVertexBufferObjectManager(), new ButtonSprite.OnClickListener() {
+			
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,
+					float pTouchAreaLocalY) {
+				MainGameActivity.this.switchScene(MainGameActivity.this.createPlayScene());
+			}
+		});
+		ButtonSprite btnScore = new ButtonSprite(CAMERA_WIDTH * 3 / 4 - btnPlayInfo[0] / 2, CAMERA_HEIGHT, btnScoreRegion, this.getVertexBufferObjectManager(), new ButtonSprite.OnClickListener() {
+			
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,
+					float pTouchAreaLocalY) {
+			}
+		});
+		btnPlay.registerEntityModifier(new MoveYModifier(0.9f, btnPlay.getY(), btnY));
+		btnScore.registerEntityModifier(new MoveYModifier(0.9f, btnPlay.getY(), btnY));
+		scene.attachChild(btnPlay);
+		scene.attachChild(btnScore);
+		scene.registerTouchArea(btnPlay);
 	}
 	
 	/*
@@ -326,7 +368,6 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		final Sprite footer = new Sprite(0, REAL_HEIGHT, footerRegion, this.getVertexBufferObjectManager());
 		hud.attachChild(footer);
 		float footerMoveDuration = Math.abs(CAMERA_WIDTH - footerInfo[0]) / GameConfig.VELOCITY;
-
 		footer.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(
 				new MoveXModifier(footerMoveDuration, 0, CAMERA_WIDTH - footerInfo[0]))));
 		
@@ -336,7 +377,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
 		
 		// character
-		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3), CAMERA_WIDTH / 4, CAMERA_HEIGHT / 2 - 40);
+		final Bird bird = new Bird(this, scene, true, this.random.nextInt(3));
 		
 		if (this.activePipe == null) {
 			this.activePipe = new ArrayList<Pipe>();
@@ -432,7 +473,9 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 							localException.printStackTrace();
 						}
 					}
-					MainGameActivity.this.destroyWorld = false;			
+					mEngine.getScene().unregisterUpdateHandler(mPhysicsWorld);
+					MainGameActivity.this.destroyWorld = false;
+					System.out.println("destroy world ok");
 				}
 			}
 		});

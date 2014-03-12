@@ -95,18 +95,7 @@ public class Pipe {
 		return this.type;
 	}
 	
-	public void setPosition(float px, float top, float range) {
-		float ptop = top - this.sprTop.getHeight();
-		float pbottom = top + range;
-		this.sprTop.setPosition(px, ptop);
-		this.sprBottom.setPosition(px, pbottom);
-	}
-	
 	public void attachToScene(Scene scene) {
-		this.sprTop.setVisible(true);
-		this.sprBottom.setVisible(true);
-		this.sprTopBody.setActive(true);
-		this.sprBottomBody.setActive(true);
 		scene.attachChild(this.sprTop);
 		scene.attachChild(this.sprBottom);		
 
@@ -142,20 +131,32 @@ public class Pipe {
 		Vector2Pool.recycle(velocity);
 	}
 	
-	public void detachFromScene() {
-		this.sprTop.detachSelf();
-		this.sprBottom.detachSelf();
-		this.sprTop.setVisible(false);
-		this.sprBottom.setVisible(false);
-		this.pause();
-	}
+//	public void detachFromScene() {
+//		this.sprTop.detachSelf();
+//		this.sprBottom.detachSelf();
+//		this.sprTop.setVisible(false);
+//		this.sprBottom.setVisible(false);
+//		this.pause();
+//	}
 	
 	public void pause() {
-//		this.sprTopBody.setActive(false);
-//		this.sprBottomBody.setActive(false);
 		Vector2 velocity = Vector2Pool.obtain(0, 0);
 		Pipe.this.sprBottomBody.setLinearVelocity(velocity);
 		Pipe.this.sprTopBody.setLinearVelocity(velocity);
 		Vector2Pool.recycle(velocity);
+	}
+	
+	public void preReset() {
+		this.sprTopBody.setTransform(-1, this.sprTopBody.getPosition().y, Pipe.this.sprTopBody.getAngle());
+	}
+	
+	public void reset() {
+		float[] pos = activity.genPipePosition(Pipe.this.sprTop.getHeight());
+		float x = pos[0] / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;					
+		float y1 = (pos[1] - Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+		float y2 = (pos[1] + pos[2] + Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+		this.sprTopBody.setTransform(x, y1, Pipe.this.sprTopBody.getAngle());
+		this.sprBottomBody.setTransform(x, y2, Pipe.this.sprBottomBody.getAngle());
+		birdPass = false;
 	}
 }
