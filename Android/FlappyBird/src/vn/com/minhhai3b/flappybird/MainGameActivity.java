@@ -27,6 +27,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
@@ -419,7 +420,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		TextureRegion pauseRegion = new TextureRegion(atlas, pauseInfo[2], pauseInfo[3], pauseInfo[0], pauseInfo[1]);
 		TextureRegion resumeRegion = new TextureRegion(atlas, resumeInfo[2], resumeInfo[3], resumeInfo[0], resumeInfo[1]);
 		TiledTextureRegion charRegion = new TiledTextureRegion(atlas, pauseRegion, resumeRegion);
-		final AnimatedSprite pauseResumeBtn = new AnimatedSprite(10, 10, charRegion, this.getVertexBufferObjectManager()) {
+		final TiledSprite pauseResumeBtn = new TiledSprite(10, 10, charRegion, this.getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
