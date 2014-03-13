@@ -12,7 +12,8 @@
 
 @implementation MenuScene
 
-
+CCSprite *footer;
+CCSprite *footer_1;
 
 + (MenuScene *)scene
 {
@@ -39,32 +40,41 @@
     background.scaleY = scaleY;
     [self addChild:background];
     NSArray *footerinfo = [atlasInfo objectForKey:@"land"];
-    CCSprite *footer = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[footerinfo objectAtIndex:3] intValue], [[footerinfo objectAtIndex:4] intValue], [[footerinfo objectAtIndex:1] intValue], [[footerinfo objectAtIndex:2] intValue])];
-    CCSprite *footer_1 = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[footerinfo objectAtIndex:3] intValue], [[footerinfo objectAtIndex:4] intValue], [[footerinfo objectAtIndex:1] intValue], [[footerinfo objectAtIndex:2] intValue])];
+    footer = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[footerinfo objectAtIndex:3] intValue], [[footerinfo objectAtIndex:4] intValue], [[footerinfo objectAtIndex:1] intValue], [[footerinfo objectAtIndex:2] intValue])];
+    footer_1 = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[footerinfo objectAtIndex:3] intValue], [[footerinfo objectAtIndex:4] intValue], [[footerinfo objectAtIndex:1] intValue], [[footerinfo objectAtIndex:2] intValue])];
     footer.position = ccp(footer.contentSize.width / 2, footer.contentSize.height / 2);
     [self addChild:footer];
-    footer_1.position = ccp(self.contentSize.width + footer.contentSize.width / 2, footer.position.y);
+    footer_1.position = ccp(footer.contentSize.width * 3 / 2, footer.position.y);
     [self addChild:footer_1];
     NSArray *copyinfo = [atlasInfo objectForKey:@"brand_copyright"];
     CCSprite *copy = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[copyinfo objectAtIndex:3] intValue], [[copyinfo objectAtIndex:4] intValue], [[copyinfo objectAtIndex:1] intValue], [[copyinfo objectAtIndex:2] intValue])];
     copy.position = ccp(self.contentSize.width / 2, footer.contentSize.height / 2 );
     [self addChild:copy];
-    // animate footer
-    float footerV = 200.0;
-    id footerAction = [CCActionRepeatForever actionWithAction: [CCActionSequence actionWithArray:@[[CCActionMoveTo actionWithDuration:(footer.contentSize.width * 2)/footerV position:CGPointMake(-footer.contentSize.width / 2, footer.position.y)], [CCActionMoveTo actionWithDuration:0.0 position:CGPointMake(footer_1.position.x + footer.contentSize.width / 2, footer.position.y)]]]];
-    CCActionCallBlock *actionBlock = [CCActionCallBlock actionWithBlock:^{
-        [footer_1 runAction:[CCActionSequence actionWithArray:@[[CCActionMoveTo actionWithDuration:0.5 position:CGPointMake(self.contentSize.width - footer.contentSize.width / 2, footer.position.y)], [CCActionMoveTo actionWithDuration:0.0 position:CGPointMake(self.contentSize.width + footer.contentSize.width / 2, footer.position.y)], actionBlock_1]]];
-    }];
-    CCActionCallBlock *actionBlock_1 = [CCActionCallBlock actionWithBlock:^{
-        [footer runAction:footerAction];
-    }];
-    [footer runAction:[CCActionSequence actionWithArray:@[[CCActionMoveTo actionWithDuration:0.5 position:CGPointMake(self.contentSize.width - footer.contentSize.width / 2, footer.position.y)], [CCActionMoveTo actionWithDuration:0.0 position:CGPointMake(self.contentSize.width + footer.contentSize.width / 2, footer.position.y)], actionBlock]]];
-//    [footer runAction:[CCActionSequence actionWithArray:@[[CCActionMoveTo actionWithDuration:(footer.contentSize.width - self.contentSize.width)/footerV position:CGPointMake(-footer.contentSize.width / 2, footer.position.y)],[CCActionMoveTo actionWithDuration:0.0 position:CGPointMake(footer.contentSize.width * 1.5, footer.position.y)], actionBlock]]];
-//    [footer runAction:footerAction];
-//    [footer_1 runAction:footerAction];
-	
     // done
 	return self;
+}
+
+-(void) update:(CCTime)delta {
+	CGPoint bg1Pos = footer.position;
+	CGPoint bg2Pos = footer_1.position;
+	bg1Pos.x -= 1;
+	bg2Pos.x -= 1;
+	
+	// move scrolling background back by one screen width to achieve "endless" scrolling
+	if (bg1Pos.x < (self.contentSize.width - footer.contentSize.width / 2)) {
+		bg1Pos.x = bg2Pos.x + footer.contentSize.width / 2;
+	}
+    else if (bg2Pos.x < (self.contentSize.width - footer.contentSize.width / 2)) {
+		bg2Pos.x = bg1Pos.x + footer.contentSize.width / 2;
+	}
+    
+	
+	// remove any inaccuracies by assigning only int values
+	// (prevents floating point rounding errors accumulating over time)
+	bg1Pos.x = (int)bg1Pos.x;
+    bg2Pos.x = (int)bg2Pos.x;
+    footer.position = bg1Pos;
+    footer_1.position = bg2Pos;
 }
 
 @end
