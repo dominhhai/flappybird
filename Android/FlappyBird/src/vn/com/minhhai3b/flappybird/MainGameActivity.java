@@ -39,12 +39,14 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
+import org.andengine.util.preferences.SimplePreferences;
 
 import vn.com.minhhai3b.flappybird.Entity.Bird;
 import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
 import vn.com.minhhai3b.flappybird.Entity.Pipe;
 import vn.com.minhhai3b.flappybird.Entity.ScoreSprite;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
+import android.content.SharedPreferences;
 import android.view.KeyEvent;
 
 import com.badlogic.gdx.math.Vector2;
@@ -323,24 +325,40 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		final Sprite scorePanel = new Sprite((CAMERA_WIDTH - scorePanelInfo[0]) / 2, CAMERA_HEIGHT, scorePanelRegion, this.getVertexBufferObjectManager());
 		gameOverText.registerEntityModifier(new ScaleModifier(0.5f, 0, 1));
 		scorePanel.registerEntityModifier(new MoveYModifier(0.8f, scorePanel.getY(), scorePanelY));
-		// score and medal
-		int[] medalInfo_0 = this.atlasInfo.get("medals_0");
-		int[] medalInfo_1 = this.atlasInfo.get("medals_2");
-		TiledTextureRegion medalRegion = new TiledTextureRegion(atlas, 
-				new TextureRegion(atlas, medalInfo_0[2], medalInfo_0[3], medalInfo_0[0], medalInfo_0[1]), 
-				new TextureRegion(atlas, medalInfo_1[2], medalInfo_1[3], medalInfo_1[0], medalInfo_1[1]));
-		AnimatedSprite medal = new AnimatedSprite(31, 46, medalRegion, this.getVertexBufferObjectManager());
-		medal.animate(150);
-		int[] newInfo = this.atlasInfo.get("new");
-		Sprite newSpr = new Sprite(140, 60, new TextureRegion(atlas, newInfo[2], newInfo[3], newInfo[0], newInfo[1]), this.getVertexBufferObjectManager());
-		scorePanel.attachChild(newSpr);
-		scorePanel.attachChild(medal);
-		// TODO score
+		// score and medal		
 		// load highest score
-		int highest = 100;
-		ScoreSprite userScore = new ScoreSprite(this, scene, CAMERA_WIDTH / 2, 50, this.loadScoreTextureRegions(true));
+		int highest = SimplePreferences.getInstance(getApplicationContext()).getInt("FB_SCORE", 0);		
+		if (score > 10) {
+			int medalIndex = -1;
+			if (score > highest) {
+				medalIndex = 1;
+			} else if (score + 10 >= highest) {
+				medalIndex = 0;
+			}			
+			if (medalIndex > -1) {
+				int[] medalInfo_0  = this.atlasInfo.get("medals_" + medalIndex);
+				int[] medalInfo_1 = this.atlasInfo.get("medals_" + (medalIndex + 2));
+				TiledTextureRegion medalRegion = new TiledTextureRegion(atlas, 
+						new TextureRegion(atlas, medalInfo_0[2], medalInfo_0[3], medalInfo_0[0], medalInfo_0[1]), 
+						new TextureRegion(atlas, medalInfo_1[2], medalInfo_1[3], medalInfo_1[0], medalInfo_1[1]));
+				AnimatedSprite medal = new AnimatedSprite(31, 46, medalRegion, this.getVertexBufferObjectManager());
+				medal.animate(150);	
+				scorePanel.attachChild(medal);
+			}
+		}
+		if (score > highest) {
+			highest = score;
+			// save highest score
+			SimplePreferences.getEditorInstance(getApplicationContext()).putInt("FB_SCORE", highest).commit();
+			// show new label
+			int[] newInfo = this.atlasInfo.get("new");
+			Sprite newSpr = new Sprite(140, 60, new TextureRegion(atlas, newInfo[2], newInfo[3], newInfo[0], newInfo[1]), this.getVertexBufferObjectManager());
+			scorePanel.attachChild(newSpr);			
+		}		
+		float scoreX = scorePanel.getWidth() - 30;
+		ScoreSprite userScore = new ScoreSprite(this, scorePanel, scoreX, 36, 1, this.loadScoreTextureRegions(true));
 		userScore.animate(score);
-		ScoreSprite highestScore = new ScoreSprite(this, scene, CAMERA_WIDTH / 2, 50, this.loadScoreTextureRegions(true));
+		ScoreSprite highestScore = new ScoreSprite(this, scorePanel, scoreX, 80, 1, this.loadScoreTextureRegions(true));
 		highestScore.setScore(highest);
 		// attach to scene
 		scene.attachChild(gameOverText);
@@ -422,7 +440,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		}
 		
 		// score
-		this.contextScore = new ScoreSprite(this, scene, CAMERA_WIDTH / 2, 50, this.loadScoreTextureRegions(true));
+		this.contextScore = new ScoreSprite(this, scene, CAMERA_WIDTH / 2, 50, 0, this.loadScoreTextureRegions(true));
 		this.contextScore.setScore(0);
 		// tutorial
 		int[] readyTextInfo = this.atlasInfo.get("text_ready");

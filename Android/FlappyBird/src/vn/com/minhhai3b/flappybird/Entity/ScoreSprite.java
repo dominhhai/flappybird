@@ -17,9 +17,10 @@ public class ScoreSprite {
 	private ITiledTextureRegion tiledTextureRegion;
 	private float width;
 	private float x;
-	private float y;	
+	private float y;
+	private int margin;/*0: center, -1: left: 1: right*/
 	
-	public ScoreSprite(MainGameActivity activity, Entity scene, float x, float y, ITiledTextureRegion pTiledTextureRegion) {
+	public ScoreSprite(MainGameActivity activity, Entity scene, float x, float y, int margin,ITiledTextureRegion pTiledTextureRegion) {
 		this.activity = activity;
 		this.scene = scene;
 		this.scoreSpriteList = new ArrayList<AnimatedSprite>();
@@ -27,6 +28,7 @@ public class ScoreSprite {
 		this.width = pTiledTextureRegion.getWidth(0);
 		this.x = x;
 		this.y = y;
+		this.margin = margin;
 	}
 	
 	public void setScore(int score) {
@@ -37,7 +39,9 @@ public class ScoreSprite {
 		this.createDigitsSprites(score);
 		for (AnimatedSprite sprite : this.scoreSpriteList) {
 			int finalIndex = sprite.getCurrentTileIndex();
-			sprite.animate(getDurations(finalIndex + 1), 0, finalIndex, 1);
+			if (finalIndex > 0) {
+				sprite.animate(getDurations(finalIndex + 1), 0, finalIndex, 1);
+			}
 		}
 	}
 	
@@ -79,7 +83,16 @@ public class ScoreSprite {
 	}
 	
 	private float getSpritePosition(int index, int length) {
-		return this.x + (length / 2 - index) * width;
+		float pX = 0;
+		if (this.margin == 0) { 
+			pX = this.x + (length / 2 - index) * width;
+		} else { 
+			pX = this.x - this.margin * index * width;
+			if (this.margin == 1) {
+				pX -= width;
+			}
+		}
+		return pX;
 	}
 	
 	private long[] getDurations(int length) {
