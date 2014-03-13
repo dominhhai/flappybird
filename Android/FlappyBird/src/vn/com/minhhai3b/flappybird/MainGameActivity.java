@@ -43,6 +43,7 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import vn.com.minhhai3b.flappybird.Entity.Bird;
 import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
 import vn.com.minhhai3b.flappybird.Entity.Pipe;
+import vn.com.minhhai3b.flappybird.Entity.ScoreSprite;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
 import android.view.KeyEvent;
 
@@ -85,6 +86,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	private ArrayList<Pipe> activePipe;
 	private boolean destroyWorld = false;
 	private int score = 0;
+	private ScoreSprite contextScore;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -284,9 +286,20 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		return pos;
 	}
 	
+	private TiledTextureRegion loadScoreTextureRegions(boolean isContext) {
+		String resource = !isContext ? "number_context_0" : "number_score_0";
+		TextureRegion[] contextScoreRegions = new TextureRegion[10];
+		for (int i = 0; i < 10; i ++) {
+			int[] textureInfo = atlasInfo.get(resource + i);
+			contextScoreRegions[i] = new TextureRegion(atlas, textureInfo[2], textureInfo[3], textureInfo[0], textureInfo[1]);
+		}
+		TiledTextureRegion tiledTextureRegion = new TiledTextureRegion(atlas, contextScoreRegions);
+		return tiledTextureRegion;
+	}
+	
 	public void increateScore() {
 		this.score ++;
-		System.err.println("score: " + this.score);
+		this.contextScore.setScore(score);
 	}
 	 
 	private void gameOverEffect(final Scene scene) {
@@ -322,6 +335,13 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		Sprite newSpr = new Sprite(140, 60, new TextureRegion(atlas, newInfo[2], newInfo[3], newInfo[0], newInfo[1]), this.getVertexBufferObjectManager());
 		scorePanel.attachChild(newSpr);
 		scorePanel.attachChild(medal);
+		// TODO score
+		// load highest score
+		int highest = 100;
+		ScoreSprite userScore = new ScoreSprite(this, scene, CAMERA_WIDTH / 2, 50, this.loadScoreTextureRegions(true));
+		userScore.animate(score);
+		ScoreSprite highestScore = new ScoreSprite(this, scene, CAMERA_WIDTH / 2, 50, this.loadScoreTextureRegions(true));
+		highestScore.setScore(highest);
 		// attach to scene
 		scene.attachChild(gameOverText);
 		scene.attachChild(scorePanel);
@@ -401,6 +421,9 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 			this.activePipe.add(pipe);
 		}
 		
+		// score
+		this.contextScore = new ScoreSprite(this, scene, CAMERA_WIDTH / 2, 50, this.loadScoreTextureRegions(true));
+		this.contextScore.setScore(0);
 		// tutorial
 		int[] readyTextInfo = this.atlasInfo.get("text_ready");
 		TextureRegion readyTextRegion = new TextureRegion(this.atlas, readyTextInfo[2], readyTextInfo[3], readyTextInfo[0], readyTextInfo[1]);
