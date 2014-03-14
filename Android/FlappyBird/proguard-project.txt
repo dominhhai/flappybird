@@ -30,17 +30,6 @@
 -optimizationpasses 5
 #-allowaccessmodification
 
-#-keep class com.googlecode.tesseract.android.TessBaseAPI {
-#    private int mNativeData;
-#}
-#-assumenosideeffects class android.util.Log {
-#    public static *** d(...);
-#    public static *** e(...);
-#    public static *** i(...);
-#    public static *** v(...);
-#    public static *** w(...);
-#}
-
 -keepattributes *Annotation*
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
@@ -57,13 +46,6 @@
 -keepclasseswithmembernames class * {
     native <methods>;
 }
-
-#-keep public class * extends android.view.View {
-#    public <init>(android.content.Context);
-#    public <init>(android.content.Context, android.util.AttributeSet);
-#    public <init>(android.content.Context, android.util.AttributeSet, int);
-#    public void set*(...);
-#}
 
 -keepclasseswithmembers class * {
     public <init>(android.content.Context, android.util.AttributeSet);
