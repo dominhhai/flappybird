@@ -21,6 +21,8 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
+import vn.com.minhhai3b.flappybird.scene.GScene;
+import vn.com.minhhai3b.flappybird.scene.PlayScene;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -48,7 +50,7 @@ public class Bird {
 		DIE
 	}
 	
-	private MainGameActivity activity;
+	private GScene gScene;
 	private Scene scene;
 	
 	private AnimatedSprite bird;
@@ -57,14 +59,14 @@ public class Bird {
 	private STATE state = STATE.NOT_MOVE;
 	private IEntityModifier pEntityModifier;
 	
-	public Bird (MainGameActivity activity, Scene scene, boolean physics, int type) {
-		this(activity, scene, physics, type, POSITION[0], POSITION[1]);
+	public Bird (GScene scene, boolean physics, int type) {
+		this(scene, physics, type, POSITION[0], POSITION[1]);
 	}
 	
-	public Bird (MainGameActivity activity, Scene scene, boolean physics, int type, float x, float y) {
+	public Bird (GScene scene, boolean physics, int type, float x, float y) {
 		this.type = type;
-		this.activity = activity;
-		this.scene = scene;
+		this.gScene = scene;
+		this.scene = scene.getScene();
 		String resource;
 		if (this.type == 0) {
 			resource = "bird2";
@@ -84,12 +86,12 @@ public class Bird {
 		TextureRegion charRegion_1 = new TextureRegion(atlas, charInfo_1[2], charInfo_1[3], charInfo_1[0], charInfo_1[1]);
 		TextureRegion charRegion_2 = new TextureRegion(atlas, charInfo_2[2], charInfo_2[3], charInfo_2[0], charInfo_2[1]);
 		TiledTextureRegion charRegion = new TiledTextureRegion(atlas, charRegion_0, charRegion_1, charRegion_2);
-		this.bird = new AnimatedSprite(x, y, charRegion, this.activity.getVertexBufferObjectManager());
+		this.bird = new AnimatedSprite(x, y, charRegion, gScene.getVertexBufferObjectManager());
 		this.scene.attachChild(this.bird);
 		if (physics) {
 			bird.animate(new long[]{100, 100, 100});
-			PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
-			final Rectangle birdRec = new Rectangle(x + 9, y + 9, 20, 20, this.activity.getVertexBufferObjectManager());
+			PhysicsWorld physicsWorld = ((PlayScene)this.gScene).getPhysicsWorld();
+			final Rectangle birdRec = new Rectangle(x + 9, y + 9, 20, 20, gScene.getVertexBufferObjectManager());
 			this.birdBody = PhysicsFactory.createCircleBody(physicsWorld, birdRec, BodyType.DynamicBody, Bird.FIXTURE_DEF);
 			this.birdBody.setUserData(Bird.BIRD);
 			physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
@@ -132,7 +134,7 @@ public class Bird {
 			this.bird.clearEntityModifiers();
 			if (collisionGround) {
 				this.pause();
-			} else {			
+			} else {
 				this.bird.registerEntityModifier(new RotationModifier(1, this.bird.getRotation(), 80));
 			}
 		} else if (state == STATE.DOWN) {
@@ -167,6 +169,10 @@ public class Bird {
 	
 	public AnimatedSprite getBird() {
 		return this.bird;
+	}
+	
+	public float getVelocityY() {
+		return this.birdBody.getLinearVelocity().y;
 	}
 	
 }

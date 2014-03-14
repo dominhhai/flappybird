@@ -15,6 +15,7 @@ import org.andengine.opengl.texture.region.TextureRegion;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
 import vn.com.minhhai3b.flappybird.data.GameConfig;
+import vn.com.minhhai3b.flappybird.scene.PlayScene;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -37,18 +38,19 @@ public class Pipe {
 	public final static float MAX_RANGE = MainGameActivity.CAMERA_HEIGHT / 2;
 	public final static float MAX_BOTTOM = MAX_TOP + MAX_RANGE;
 	
+	private PlayScene playScene;
+	
 	private Sprite sprTop = null;
 	private Sprite sprBottom = null;
 	private Body sprTopBody = null;
 	private Body sprBottomBody = null;
 	
-	private MainGameActivity activity;
 	private int type;
 	
 	private boolean birdPass = false;
 	
-	public Pipe(MainGameActivity activity, int type, float px, float top, float range) {
-		this.activity = activity;
+	public Pipe(PlayScene scene, int type, float px, float top, float range) {
+		this.playScene = scene;
 		this.type = type;
 		Texture atlas = GameConfig.getInstance().getAtlas();
 		Map<String, int[]> atlasInfo = GameConfig.getInstance().getAtlasInfo();
@@ -61,9 +63,9 @@ public class Pipe {
 		
 		float ptop = top - upInfo[1];
 		float pbottom = top + range;		
-		this.sprTop = new Sprite(px, ptop, upRegion, activity.getVertexBufferObjectManager());
-		this.sprBottom = new Sprite(px, pbottom, downRegion, activity.getVertexBufferObjectManager());
-		PhysicsWorld physicsWorld = this.activity.getPhysicsWorld();
+		this.sprTop = new Sprite(px, ptop, upRegion, scene.getVertexBufferObjectManager());
+		this.sprBottom = new Sprite(px, pbottom, downRegion, scene.getVertexBufferObjectManager());
+		PhysicsWorld physicsWorld = ((PlayScene)scene).getPhysicsWorld();
 		this.sprTopBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprTop, BodyType.KinematicBody, FIXTURE_DEF);
 		this.sprBottomBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprBottom, BodyType.KinematicBody, FIXTURE_DEF);
 		this.sprTopBody.setUserData(Pipe.PIPE);
@@ -108,7 +110,7 @@ public class Pipe {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				if (Pipe.this.sprBottom.getX() < - Pipe.this.sprBottom.getWidth()) {					
-					float[] pos = activity.genPipePosition(Pipe.this.sprTop.getHeight());
+					float[] pos = playScene.genPipePosition(Pipe.this.sprTop.getHeight());
 					float x = pos[0] / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;					
 					float y1 = (pos[1] - Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
 					float y2 = (pos[1] + pos[2] + Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
@@ -116,7 +118,7 @@ public class Pipe {
 					Pipe.this.sprBottomBody.setTransform(x, y2, Pipe.this.sprBottomBody.getAngle());
 					birdPass = false;
 				} else if (Pipe.this.sprBottom.getX() + Pipe.this.sprBottom.getWidth() < MainGameActivity.CAMERA_WIDTH / 4 && !birdPass) {
-					activity.increateScore();
+					playScene.increateScore();
 					birdPass = true;
 				}
 			}
@@ -131,14 +133,6 @@ public class Pipe {
 		Vector2Pool.recycle(velocity);
 	}
 	
-//	public void detachFromScene() {
-//		this.sprTop.detachSelf();
-//		this.sprBottom.detachSelf();
-//		this.sprTop.setVisible(false);
-//		this.sprBottom.setVisible(false);
-//		this.pause();
-//	}
-	
 	public void pause() {
 		Vector2 velocity = Vector2Pool.obtain(0, 0);
 		Pipe.this.sprBottomBody.setLinearVelocity(velocity);
@@ -151,7 +145,7 @@ public class Pipe {
 	}
 	
 	public void reset() {
-		float[] pos = activity.genPipePosition(Pipe.this.sprTop.getHeight());
+		float[] pos = playScene.genPipePosition(Pipe.this.sprTop.getHeight());
 		float x = pos[0] / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;					
 		float y1 = (pos[1] - Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
 		float y2 = (pos[1] + pos[2] + Pipe.this.sprTop.getHeight() / 2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
