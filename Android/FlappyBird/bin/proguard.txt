@@ -1,0 +1,6 @@
+# view AndroidManifest.xml #generated:26
+-keep class vn.com.minhhai3b.flappybird.MainGameActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:16
+-keep class vn.com.minhhai3b.flappybird.SplashActivity { <init>(...); }
+
