@@ -50,15 +50,37 @@ CCSprite *footer_1;
     CCSprite *copy = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[copyinfo objectAtIndex:3] intValue], [[copyinfo objectAtIndex:4] intValue], [[copyinfo objectAtIndex:1] intValue], [[copyinfo objectAtIndex:2] intValue])];
     copy.position = ccp(self.contentSize.width / 2, footer.contentSize.height / 2 );
     [self addChild:copy];
+    // btn Play
+    NSArray *btnPlayInfo = [atlasInfo objectForKey:@"button_play"];
+    CCSpriteFrame *btnPlayFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:CGRectMake([[btnPlayInfo objectAtIndex:3] intValue], [[btnPlayInfo objectAtIndex:4] intValue], [[btnPlayInfo objectAtIndex:1] intValue], [[btnPlayInfo objectAtIndex:2] intValue]) rotated:false offset:CGPointMake(0, 0) originalSize:CGSizeMake([[btnPlayInfo objectAtIndex:3] intValue], [[btnPlayInfo objectAtIndex:4] intValue])];
+    CCButton *btnPlay = [CCButton buttonWithTitle:@"" spriteFrame:btnPlayFrame];
+    btnPlay.position = ccp((self.contentSize.width / 2 - [[btnPlayInfo objectAtIndex:0] integerValue]) / 2, self.contentSize.height - footer.position.y - footer.contentSize.height / 2 - 20 - [[btnPlayInfo objectAtIndex:1] integerValue]);
+    [btnPlay setTarget:self selector:@selector(onBtnPlayClicked:)];
+    [self addChild:btnPlay];
+    // btn Score
+    NSArray *btnScoreInfo = [atlasInfo objectForKey:@"button_score"];
+    CCSpriteFrame *btnScoreFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:CGRectMake([[btnScoreInfo objectAtIndex:3] intValue], [[btnScoreInfo objectAtIndex:4] intValue], [[btnScoreInfo objectAtIndex:1] intValue], [[btnScoreInfo objectAtIndex:2] intValue]) rotated:false offset:CGPointMake(0, 0) originalSize:CGSizeMake([[btnScoreInfo objectAtIndex:3] intValue], [[btnScoreInfo objectAtIndex:4] intValue])];
+    CCButton *btnScore = [CCButton buttonWithTitle:@"" spriteFrame:btnScoreFrame];
+    btnScore.position = ccp(self.contentSize.width - btnPlay.position.x, btnPlay.position.y);
+    [btnScore setTarget:self selector:@selector(onBtnScoreClicked:)];
+    [self addChild:btnScore];
     // done
 	return self;
+}
+
+- (void)onBtnPlayClicked:(id)sender {
+    // start spinning scene with transition
+    NSLog(@"BtnPlay Clicked");
+}
+
+- (void)onBtnScoreClicked:(id)sender {
+    // start spinning scene with transition
+    NSLog(@"BtnScore Clicked");
 }
 
 -(void) update:(CCTime)delta {
 	CGPoint bg1Pos = footer.position;
 	CGPoint bg2Pos = footer_1.position;
-    
-//    NSLog(@"Before: %f; %f; size: %f", bg1Pos.x, bg2Pos.x, footer.contentSize.width /  2);
     
     bg1Pos.x -= 1;
 	bg2Pos.x -= 1;
@@ -70,12 +92,6 @@ CCSprite *footer_1;
 		bg2Pos.x = bg1Pos.x + footer_1.contentSize.width;
 	}
 
-//    NSLog(@"After: %f; %f; size: %f", bg1Pos.x, bg2Pos.x, footer.contentSize.width /  2);	
-    
-	// remove any inaccuracies by assigning only int values
-	// (prevents floating point rounding errors accumulating over time)
-//	bg1Pos.x = (int)bg1Pos.x;
-//    bg2Pos.x = (int)bg2Pos.x;
     footer.position = bg1Pos;
     footer_1.position = bg2Pos;
 }

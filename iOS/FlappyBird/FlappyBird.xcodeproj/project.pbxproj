@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C81B60E718D32DB900421D08 /* PlayScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C81B60E618D32DB900421D08 /* PlayScene.m */; };
 		C8F6473A18C9CD3100CBF405 /* GameConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6473918C9CD3100CBF405 /* GameConfig.m */; };
 		C8F6474018C9CEA100CBF405 /* MenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6473F18C9CEA100CBF405 /* MenuScene.m */; };
 		C8F6474318C9D3D600CBF405 /* Bird.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6474218C9D3D600CBF405 /* Bird.m */; };
@@ -226,6 +227,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C81B60E518D32DB900421D08 /* PlayScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayScene.h; path = Classes/PlayScene.h; sourceTree = "<group>"; };
+		C81B60E618D32DB900421D08 /* PlayScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayScene.m; path = Classes/PlayScene.m; sourceTree = "<group>"; };
 		C8F6473818C9CD3100CBF405 /* GameConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameConfig.h; path = Classes/GameConfig.h; sourceTree = "<group>"; };
 		C8F6473918C9CD3100CBF405 /* GameConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameConfig.m; path = Classes/GameConfig.m; sourceTree = "<group>"; };
 		C8F6473E18C9CEA100CBF405 /* MenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuScene.h; path = Classes/MenuScene.h; sourceTree = "<group>"; };
@@ -1551,6 +1554,8 @@
 				C8F6473F18C9CEA100CBF405 /* MenuScene.m */,
 				C8F6474118C9D3D600CBF405 /* Bird.h */,
 				C8F6474218C9D3D600CBF405 /* Bird.m */,
+				C81B60E518D32DB900421D08 /* PlayScene.h */,
+				C81B60E618D32DB900421D08 /* PlayScene.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1796,6 +1801,7 @@
 				C8F6473A18C9CD3100CBF405 /* GameConfig.m in Sources */,
 				C8F6474018C9CEA100CBF405 /* MenuScene.m in Sources */,
 				C8F6474318C9D3D600CBF405 /* Bird.m in Sources */,
+				C81B60E718D32DB900421D08 /* PlayScene.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
