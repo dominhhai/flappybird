@@ -211,7 +211,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,
 					float pTouchAreaLocalY) {
-				mActivity.switchScene((new PlayScene(mActivity)).getScene());
+				resetScene();
 			}
 		});
 		ButtonSprite btnScore = new ButtonSprite(CAMERA_WIDTH * 3 / 4 - btnPlayInfo[0] / 2, CAMERA_HEIGHT, btnScoreRegion, vertexBufferObjectManager, new ButtonSprite.OnClickListener() {
@@ -225,9 +225,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 		btnScore.registerEntityModifier(new MoveYModifier(0.9f, btnPlay.getY(), btnY));
 		scene.attachChild(btnPlay);
 		scene.attachChild(btnScore);
-		scene.registerTouchArea(btnPlay);
-		
-		this.destroyPhysicsWorld();
+		scene.registerTouchArea(btnPlay);		
 	}
 	
 	@Override
@@ -299,8 +297,8 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN && bird.getState() != STATE.NOT_MOVE && bird.getState() != STATE.DIE) {
 					if (this.getCurrentTileIndex() == 0) { // pause
-						for (Pipe pipe : activePipe) {	
-							pipe.pause();
+						for (Pipe pipe : activePipe) {
+							pipe.pause();							
 						}
 						bird.pause();
 						footer.unregisterEntityModifier(footerModifier);
@@ -324,6 +322,10 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 		scene.setOnSceneTouchListener(this);
 	}
 
+	private void resetScene() {
+		mActivity.switchScene((new PlayScene(mActivity)).getScene());
+	}
+	
 	@Override
 	protected boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -348,18 +350,20 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 		return false;
 	}
 
+	
+	
 	@Override
 	public void beginContact(Contact contact) {
 		final Body b1 = contact.getFixtureA().getBody();
         final Body b2 = contact.getFixtureB().getBody();
         final String b1Name = (String) b1.getUserData();
         final String b2Name = (String) b2.getUserData();
-        if ((b1Name !=null && b1Name.equals(Bird.BIRD)) || (b2Name !=null && b2Name.equals(Bird.BIRD))) {
-        	System.out.println("vec: " + bird.getVelocityY());
+        if ((b1Name !=null && b1Name.equals(Bird.BIRD)) || (b2Name !=null && b2Name.equals(Bird.BIRD))) {        	
         	boolean groundCollision = b1Name == null || b2Name == null;
         	if (bird.getState() == STATE.DIE) {
-        		if (groundCollision) {		
+        		if (groundCollision || bird.isStand()) {		
             		bird.pause();
+            		destroyPhysicsWorld();
             	}
             	return;
         	}
@@ -370,7 +374,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 				pipe.pause();
 			}
         	// bird die
-        	bird.setState(STATE.DIE, (b1Name == null || b2Name == null));
+        	bird.setState(STATE.DIE, groundCollision);
         	// scene color
         	handleGameOver();
         	scene.detachChild(pauseResumeBtn);

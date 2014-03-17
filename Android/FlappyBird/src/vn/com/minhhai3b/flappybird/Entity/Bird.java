@@ -171,8 +171,17 @@ public class Bird {
 		return this.bird;
 	}
 	
-	public float getVelocityY() {
-		return this.birdBody.getLinearVelocity().y;
-	}
 	
+	private Vector2 preVelocity = null;
+	
+	public boolean isStand() {
+		Vector2 curVelocity = this.birdBody.getLinearVelocity();
+		if (this.preVelocity != null && preVelocity.x == curVelocity.x && preVelocity.y == curVelocity.y) {			
+			return true;
+		} else {
+			this.preVelocity = curVelocity;
+			return false;
+		}
+	}
+
 }

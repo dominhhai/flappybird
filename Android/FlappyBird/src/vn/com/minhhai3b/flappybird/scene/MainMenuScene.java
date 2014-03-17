@@ -12,8 +12,6 @@ import vn.com.minhhai3b.flappybird.Entity.Bird;
 import android.view.KeyEvent;
 
 public class MainMenuScene extends GScene {
-
-	private Sprite backgroud;
 	
 	public MainMenuScene(final MainGameActivity pActivity) {
 		super(pActivity);
@@ -23,7 +21,7 @@ public class MainMenuScene extends GScene {
 	protected void loadScene() {
 		int[] bgInfo = this.atlasInfo.get("bg_day");
 		TextureRegion backgroudRegion = new TextureRegion(this.atlas, bgInfo[2], bgInfo[3], bgInfo[0], bgInfo[1]);
-		this.backgroud = new Sprite(0, 0, backgroudRegion, vertexBufferObjectManager);
+		Sprite backgroud = new Sprite(0, 0, backgroudRegion, vertexBufferObjectManager);
 		scene.attachChild(backgroud);
 		
 		int[] footerInfo = this.atlasInfo.get("land");
