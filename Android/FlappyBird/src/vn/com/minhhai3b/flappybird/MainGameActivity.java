@@ -33,10 +33,6 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 
 	public static final int CAMERA_WIDTH = 288;
 	public static final int CAMERA_HEIGHT = 512;	
-	
-	public static final String SCENE_MENU = "SCENE_MENU";
-	public static final String SCENE_PLAY = "SCENE_PLAY";
-	public static final String SCENE_SCORE = "SCENE_SCORE";	
 
 	private Camera mCamera = null;
 	
@@ -62,7 +58,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 
 	@Override
 	protected Scene onCreateScene() {
-		return (new MainMenuScene(this, atlasInfo, atlas)).getScene();
+		return (new MainMenuScene(this)).getScene();
 	}
 	
 	public Camera getCamera() {
@@ -151,7 +147,15 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		}
 		
 		return atlasInfo;
-	}		
+	}
+	
+	public Map<String, int[]> getAtlasInfo() {
+		return this.atlasInfo;
+	}
+	
+	public Texture getAtlas() {
+		return this.atlas;
+	}
 
 	
 	/*

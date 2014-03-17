@@ -1,13 +1,10 @@
 package vn.com.minhhai3b.flappybird.scene;
 
-import java.util.Map;
-
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveYModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
@@ -18,8 +15,8 @@ public class MainMenuScene extends GScene {
 
 	private Sprite backgroud;
 	
-	public MainMenuScene(final MainGameActivity pActivity, final Map<String, int[]> pAtlasInfo, final Texture pAtlas) {
-		super(pActivity, pAtlasInfo, pAtlas);
+	public MainMenuScene(final MainGameActivity pActivity) {
+		super(pActivity);
 	}
 
 	@Override
@@ -58,7 +55,7 @@ public class MainMenuScene extends GScene {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,
 					float pTouchAreaLocalY) {
-				mActivity.switchScene((new PlayScene(mActivity, atlasInfo, atlas)).getScene());
+				mActivity.switchScene((new PlayScene(mActivity)).getScene());
 			}
 		});
 		ButtonSprite btnScore = new ButtonSprite(CAMERA_WIDTH * 3 / 4 - btnPlayInfo[0] / 2, btnY, btnScoreRegion, vertexBufferObjectManager, new ButtonSprite.OnClickListener() {

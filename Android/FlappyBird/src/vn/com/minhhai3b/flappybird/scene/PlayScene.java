@@ -2,7 +2,6 @@ package vn.com.minhhai3b.flappybird.scene;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
 
 import org.andengine.engine.camera.hud.HUD;
@@ -22,28 +21,27 @@ import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.preferences.SimplePreferences;
 
+import vn.com.minhhai3b.flappybird.MainGameActivity;
+import vn.com.minhhai3b.flappybird.Entity.Bird;
+import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
+import vn.com.minhhai3b.flappybird.Entity.Pipe;
+import vn.com.minhhai3b.flappybird.Entity.ScoreSprite;
+import vn.com.minhhai3b.flappybird.data.GameConfig;
+import android.view.KeyEvent;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-
-import android.view.KeyEvent;
-import vn.com.minhhai3b.flappybird.MainGameActivity;
-import vn.com.minhhai3b.flappybird.Entity.Bird;
-import vn.com.minhhai3b.flappybird.Entity.Pipe;
-import vn.com.minhhai3b.flappybird.Entity.ScoreSprite;
-import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
-import vn.com.minhhai3b.flappybird.data.GameConfig;
 
 public class PlayScene extends GScene implements IOnSceneTouchListener, ContactListener {
 	
@@ -64,8 +62,8 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 	private TiledSprite pauseResumeBtn;
 	private LoopEntityModifier footerModifier;
 
-	public PlayScene(final MainGameActivity pActivity, final Map<String, int[]> pAtlasInfo, final Texture pAtlas) {
-		super(pActivity, pAtlasInfo, pAtlas);
+	public PlayScene(final MainGameActivity pActivity) {
+		super(pActivity);
 	}
 
 	public PhysicsWorld getPhysicsWorld() {
@@ -213,7 +211,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,
 					float pTouchAreaLocalY) {
-				mActivity.switchScene((new PlayScene(mActivity, atlasInfo, atlas)).getScene());
+				mActivity.switchScene((new PlayScene(mActivity)).getScene());
 			}
 		});
 		ButtonSprite btnScore = new ButtonSprite(CAMERA_WIDTH * 3 / 4 - btnPlayInfo[0] / 2, CAMERA_HEIGHT, btnScoreRegion, vertexBufferObjectManager, new ButtonSprite.OnClickListener() {

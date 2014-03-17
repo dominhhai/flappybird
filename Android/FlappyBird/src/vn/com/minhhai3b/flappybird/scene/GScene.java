@@ -22,10 +22,10 @@ public abstract class GScene {
 	
 	protected Object userData;
 	
-	public GScene(final MainGameActivity pActivity, final Map<String, int[]> pAtlasInfo, final Texture pAtlas) {
+	public GScene(final MainGameActivity pActivity) {
 		this.mActivity = pActivity;
-		this.atlasInfo = pAtlasInfo;
-		this.atlas = pAtlas;
+		this.atlasInfo = pActivity.getAtlasInfo();
+		this.atlas = pActivity.getAtlas();
 		
 		this.scene = new Scene();
 		this.CAMERA_WIDTH = MainGameActivity.CAMERA_WIDTH;
