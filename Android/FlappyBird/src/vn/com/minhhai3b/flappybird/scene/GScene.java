@@ -9,6 +9,12 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import android.view.KeyEvent;
 import vn.com.minhhai3b.flappybird.MainGameActivity;
 
+/**
+ * (c) 2014 Hai Do Minh
+ * 
+ * @author Hai Do Minh
+ */
+
 public abstract class GScene {
 
 	protected MainGameActivity mActivity;
