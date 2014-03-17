@@ -53,7 +53,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 	private HUD hud;
 	private Sprite backgroud = null;
 	private PhysicsWorld mPhysicsWorld;
-	private Random random = new Random();
+	private Random random;
 	private ArrayList<Pipe> activePipe;
 	private int score = 0;
 	private ScoreSprite contextScore;
@@ -213,7 +213,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,
 					float pTouchAreaLocalY) {
-				mActivity.switchScene((new MainMenuScene(mActivity, atlasInfo, atlas)).getScene());
+				mActivity.switchScene((new PlayScene(mActivity, atlasInfo, atlas)).getScene());
 			}
 		});
 		ButtonSprite btnScore = new ButtonSprite(CAMERA_WIDTH * 3 / 4 - btnPlayInfo[0] / 2, CAMERA_HEIGHT, btnScoreRegion, vertexBufferObjectManager, new ButtonSprite.OnClickListener() {
@@ -238,6 +238,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 		mActivity.getCamera().setHUD(hud);
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 20), true);
 		this.score = 0;
+		this.random = new Random();
 		
 		VertexBufferObjectManager vbm = this.mActivity.getVertexBufferObjectManager();
 		int[] bgInfo = this.atlasInfo.get((this.random.nextInt(2) == 0) ? "bg_day" : "bg_night");
@@ -259,7 +260,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
 		
 		// character
-		bird = new Bird(this, true, this.random.nextInt(3));		
+		bird = new Bird(this, true, this.random.nextInt(3));
 		
 		if (this.activePipe == null) {
 			this.activePipe = new ArrayList<Pipe>();
@@ -359,7 +360,7 @@ public class PlayScene extends GScene implements IOnSceneTouchListener, ContactL
         	System.out.println("vec: " + bird.getVelocityY());
         	boolean groundCollision = b1Name == null || b2Name == null;
         	if (bird.getState() == STATE.DIE) {
-        		if (groundCollision || bird.getVelocityY() == 0) {	            			
+        		if (groundCollision) {		
             		bird.pause();
             	}
             	return;
