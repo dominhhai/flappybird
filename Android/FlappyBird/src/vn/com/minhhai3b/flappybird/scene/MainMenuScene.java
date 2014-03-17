@@ -11,6 +11,12 @@ import vn.com.minhhai3b.flappybird.MainGameActivity;
 import vn.com.minhhai3b.flappybird.Entity.Bird;
 import android.view.KeyEvent;
 
+/**
+ * (c) 2014 Hai Do Minh
+ * 
+ * @author Hai Do Minh
+ */
+
 public class MainMenuScene extends GScene {
 	
 	public MainMenuScene(final MainGameActivity pActivity) {
