@@ -7,6 +7,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.andengine.audio.sound.Sound;
+import org.andengine.audio.sound.SoundFactory;
+import org.andengine.audio.sound.SoundManager;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -20,6 +23,7 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 
 import vn.com.minhhai3b.flappybird.data.GameConfig;
 import vn.com.minhhai3b.flappybird.scene.MainMenuScene;
+import android.content.Context;
 import android.view.KeyEvent;
 
 
@@ -39,12 +43,14 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	private Map<String, int[]> atlasInfo = null;
 	private Texture atlas = null;
 	
+	private Map<String, Sound> sounds = null;
+	
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		EngineOptions mEngineOptions =  new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new FillResolutionPolicy(), this.mCamera);
 		mEngineOptions.getRenderOptions().setMultiSampling(true);
-		mEngineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
+		mEngineOptions.getAudioOptions().setNeedsMusic(false).setNeedsSound(true);
 		return mEngineOptions;
 	}
 
@@ -54,6 +60,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		this.atlas = this.decodeAtlasTexture();
 		this.atlas.load();
 		GameConfig.getInstance().setAtlas(this.atlas, this.atlasInfo);
+		this.sounds = this.loadSound();
 	}
 
 	@Override
@@ -87,6 +94,22 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		scene.clearChildScene();
 		scene.detachChildren();
 		scene.dispose();
+	}
+	
+	private Map<String, Sound> loadSound() {
+		Map<String, Sound> soundMap = new HashMap<String, Sound>();
+		String soundKeys[] = new String[] {"die", "hit", "point", "swooshing", "wing"};
+		SoundManager soundManager = this.getSoundManager();
+		Context context = this.getApplicationContext();
+		for (String key : soundKeys) {
+			try {
+				Sound sound = SoundFactory.createSoundFromAsset(soundManager, context, "sounds/sfx_" + key + ".ogg");
+				soundMap.put(key, sound);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return soundMap;
 	}
 	
 	private Texture decodeAtlasTexture() {
@@ -149,6 +172,10 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		return atlasInfo;
 	}
 	
+	public Map<String, Sound> getSounds() {
+		return this.sounds;
+	}
+	
 	public Map<String, int[]> getAtlasInfo() {
 		return this.atlasInfo;
 	}
@@ -161,18 +188,16 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	@Override
 	public void onPause() {		
 		super.onPause();
-		// TODO pause game music
 		if (this.isGameLoaded()) {
-			
+			this.mEngine.getSoundManager().onPause();
 		}
 	}
 	
 	@Override
 	public synchronized void onResume() {		
 		super.onResume();
-		// TODO resume game music
 		if (this.isGameLoaded()) {
-			
+			this.mEngine.getSoundManager().onResume();
 		}
 	}
 	
@@ -181,7 +206,7 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		super.onDestroy();
 		// TODO destroy
 		if (this.isGameLoaded()) {
-//			System.exit(0);
+			
 		}
 	}
 	
