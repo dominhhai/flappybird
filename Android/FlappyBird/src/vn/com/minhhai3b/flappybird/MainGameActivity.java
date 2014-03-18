@@ -158,6 +158,33 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 	}
 
 	
+	@Override
+	public void onPause() {		
+		super.onPause();
+		// TODO pause game music
+		if (this.isGameLoaded()) {
+			
+		}
+	}
+	
+	@Override
+	public synchronized void onResume() {		
+		super.onResume();
+		// TODO resume game music
+		if (this.isGameLoaded()) {
+			
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {		
+		super.onDestroy();
+		// TODO destroy
+		if (this.isGameLoaded()) {
+//			System.exit(0);
+		}
+	}
+	
 	/*
 	 * Handle keyboard event
 	 * 

@@ -1,4 +1,4 @@
-# view AndroidManifest.xml #generated:26
+# view AndroidManifest.xml #generated:27
 -keep class vn.com.minhhai3b.flappybird.MainGameActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:16
