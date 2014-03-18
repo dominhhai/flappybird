@@ -28,6 +28,9 @@ CCSprite *footer_1;
     self = [super init];
     if (!self) return(nil);
     
+    [self setUserInteractionEnabled:YES];
+    [self setMultipleTouchEnabled:YES];
+    
     NSMutableDictionary* atlasInfo = GameConfig.atlasInfo;
     CCTexture *atlas = GameConfig.atlas;
 
@@ -40,8 +43,9 @@ CCSprite *footer_1;
     background.scaleY = scaleY;
     [self addChild:background];
     NSArray *footerinfo = [atlasInfo objectForKey:@"land"];
-    footer = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[footerinfo objectAtIndex:3] intValue], [[footerinfo objectAtIndex:4] intValue], [[footerinfo objectAtIndex:1] intValue], [[footerinfo objectAtIndex:2] intValue])];
-    footer_1 = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[footerinfo objectAtIndex:3] intValue], [[footerinfo objectAtIndex:4] intValue], [[footerinfo objectAtIndex:1] intValue], [[footerinfo objectAtIndex:2] intValue])];
+    CGRect footerRectInPixels = CGRectMake([[footerinfo objectAtIndex:3] intValue], [[footerinfo objectAtIndex:4] intValue], [[footerinfo objectAtIndex:1] intValue], [[footerinfo objectAtIndex:2] intValue]);
+    footer = [CCSprite spriteWithTexture:atlas rect:footerRectInPixels];
+    footer_1 = [CCSprite spriteWithTexture:atlas rect:footerRectInPixels];
     footer.position = ccp(footer.contentSize.width / 2, footer.contentSize.height / 2);
     footer_1.position = ccp(footer.contentSize.width * 3 / 2, footer.position.y);
     [self addChild:footer];
@@ -50,18 +54,23 @@ CCSprite *footer_1;
     CCSprite *copy = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[copyinfo objectAtIndex:3] intValue], [[copyinfo objectAtIndex:4] intValue], [[copyinfo objectAtIndex:1] intValue], [[copyinfo objectAtIndex:2] intValue])];
     copy.position = ccp(self.contentSize.width / 2, footer.contentSize.height / 2 );
     [self addChild:copy];
+    
     // btn Play
     NSArray *btnPlayInfo = [atlasInfo objectForKey:@"button_play"];
-    CCSpriteFrame *btnPlayFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:CGRectMake([[btnPlayInfo objectAtIndex:3] intValue], [[btnPlayInfo objectAtIndex:4] intValue], [[btnPlayInfo objectAtIndex:1] intValue], [[btnPlayInfo objectAtIndex:2] intValue]) rotated:false offset:CGPointMake(0, 0) originalSize:CGSizeMake([[btnPlayInfo objectAtIndex:3] intValue], [[btnPlayInfo objectAtIndex:4] intValue])];
+    CGSize btnSizeInPixels = CGSizeMake([[btnPlayInfo objectAtIndex:1] intValue], [[btnPlayInfo objectAtIndex:2] intValue]);
+    CGRect btnPlayRectInPixels = {CGPointMake([[btnPlayInfo objectAtIndex:3] intValue], [[btnPlayInfo objectAtIndex:4] intValue]), btnSizeInPixels};
+    CCSpriteFrame *btnPlayFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:btnPlayRectInPixels rotated:NO offset:CGPointZero originalSize:btnSizeInPixels];
     CCButton *btnPlay = [CCButton buttonWithTitle:@"" spriteFrame:btnPlayFrame];
-    btnPlay.position = ccp((self.contentSize.width / 2 - [[btnPlayInfo objectAtIndex:0] integerValue]) / 2, self.contentSize.height - footer.position.y - footer.contentSize.height / 2 - 20 - [[btnPlayInfo objectAtIndex:1] integerValue]);
+    CGPoint btnPlayPosition = ccp(self.contentSize.width / 4, footer.position.y + footer.contentSize.height / 2 + 20 + btnSizeInPixels.height / 2);
+    btnPlay.position = btnPlayPosition;
     [btnPlay setTarget:self selector:@selector(onBtnPlayClicked:)];
     [self addChild:btnPlay];
     // btn Score
     NSArray *btnScoreInfo = [atlasInfo objectForKey:@"button_score"];
-    CCSpriteFrame *btnScoreFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:CGRectMake([[btnScoreInfo objectAtIndex:3] intValue], [[btnScoreInfo objectAtIndex:4] intValue], [[btnScoreInfo objectAtIndex:1] intValue], [[btnScoreInfo objectAtIndex:2] intValue]) rotated:false offset:CGPointMake(0, 0) originalSize:CGSizeMake([[btnScoreInfo objectAtIndex:3] intValue], [[btnScoreInfo objectAtIndex:4] intValue])];
+    CGRect btnScoreRectInPixels = {CGPointMake([[btnScoreInfo objectAtIndex:3] intValue], [[btnScoreInfo objectAtIndex:4] intValue]), btnSizeInPixels};
+    CCSpriteFrame *btnScoreFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:btnScoreRectInPixels rotated:NO offset:CGPointZero originalSize:btnSizeInPixels];
     CCButton *btnScore = [CCButton buttonWithTitle:@"" spriteFrame:btnScoreFrame];
-    btnScore.position = ccp(self.contentSize.width - btnPlay.position.x, btnPlay.position.y);
+    btnScore.position = ccp(self.contentSize.width - btnPlayPosition.x, btnPlayPosition.y);
     [btnScore setTarget:self selector:@selector(onBtnScoreClicked:)];
     [self addChild:btnScore];
     // done
