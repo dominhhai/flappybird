@@ -29,7 +29,7 @@ CCSprite *footer_1;
     if (!self) return(nil);
     
     [self setUserInteractionEnabled:YES];
-    [self setMultipleTouchEnabled:YES];
+    [self setMultipleTouchEnabled:NO];
     
     NSMutableDictionary* atlasInfo = GameConfig.atlasInfo;
     CCTexture *atlas = GameConfig.atlas;
@@ -54,7 +54,19 @@ CCSprite *footer_1;
     CCSprite *copy = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[copyinfo objectAtIndex:3] intValue], [[copyinfo objectAtIndex:4] intValue], [[copyinfo objectAtIndex:1] intValue], [[copyinfo objectAtIndex:2] intValue])];
     copy.position = ccp(self.contentSize.width / 2, footer.contentSize.height / 2 );
     [self addChild:copy];
-    
+    // title&bird
+    NSArray *titleInfo = [atlasInfo objectForKey:@"title"];
+    NSArray *charInfo_0 = [atlasInfo objectForKey:@"bird0_0"];
+    CCSprite *title = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[titleInfo objectAtIndex:3] intValue], [[titleInfo objectAtIndex:4] intValue], [[titleInfo objectAtIndex:1] intValue], [[titleInfo objectAtIndex:2] intValue])];
+    CCSprite *bird = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[charInfo_0 objectAtIndex:3] intValue], [[charInfo_0 objectAtIndex:4] intValue], [[charInfo_0 objectAtIndex:1] intValue], [[charInfo_0 objectAtIndex:2] intValue])];
+    CGPoint titlePosition = ccp((self.contentSize.width - 5 - bird.contentSize.width) / 2, self.contentSize.height / 2 + title.contentSize.height);
+    title.position = titlePosition;
+    CGPoint birdPosition = ccp(titlePosition.x + title.contentSize.width / 2 + bird.contentSize.width / 2 + 5, titlePosition.y);
+    bird.position = birdPosition;
+    [title runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:[CCActionMoveTo actionWithDuration:0.45 position:ccp(titlePosition.x, titlePosition.y - 5)], [CCActionMoveTo actionWithDuration:0.45 position:ccp(titlePosition.x, titlePosition.y + 20)], nil]]];
+    [bird runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:[CCActionMoveTo actionWithDuration:0.45 position:ccp(birdPosition.x, birdPosition.y - 5)], [CCActionMoveTo actionWithDuration:0.45 position:ccp(birdPosition.x, birdPosition.y + 20)], nil]]];
+    [self addChild:title];
+    [self addChild:bird];
     // btn Play
     NSArray *btnPlayInfo = [atlasInfo objectForKey:@"button_play"];
     CGSize btnSizeInPixels = CGSizeMake([[btnPlayInfo objectAtIndex:1] intValue], [[btnPlayInfo objectAtIndex:2] intValue]);
