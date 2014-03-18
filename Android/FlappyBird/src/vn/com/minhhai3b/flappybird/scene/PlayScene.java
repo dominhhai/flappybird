@@ -43,6 +43,12 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+/**
+ * (c) 2014 Hai Do Minh
+ * 
+ * @author Hai Do Minh
+ */
+
 public class PlayScene extends GScene implements IOnSceneTouchListener, ContactListener {
 	
 	public static final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0);
