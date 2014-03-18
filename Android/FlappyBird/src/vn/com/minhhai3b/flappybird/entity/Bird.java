@@ -1,4 +1,4 @@
-package vn.com.minhhai3b.flappybird.Entity;
+package vn.com.minhhai3b.flappybird.entity;
 
 import java.util.Map;
 

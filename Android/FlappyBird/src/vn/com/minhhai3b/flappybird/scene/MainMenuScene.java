@@ -8,7 +8,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.region.TextureRegion;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
-import vn.com.minhhai3b.flappybird.Entity.Bird;
+import vn.com.minhhai3b.flappybird.entity.Bird;
 import android.view.KeyEvent;
 
 /**

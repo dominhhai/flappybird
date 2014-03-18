@@ -1,4 +1,4 @@
-package vn.com.minhhai3b.flappybird.data;
+package vn.com.minhhai3b.flappybird.config;
 
 
 

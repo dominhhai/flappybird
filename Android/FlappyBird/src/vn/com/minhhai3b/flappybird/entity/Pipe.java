@@ -1,4 +1,4 @@
-package vn.com.minhhai3b.flappybird.Entity;
+package vn.com.minhhai3b.flappybird.entity;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
-import vn.com.minhhai3b.flappybird.data.GameConfig;
+import vn.com.minhhai3b.flappybird.config.GameConfig;
 import vn.com.minhhai3b.flappybird.scene.PlayScene;
 
 import com.badlogic.gdx.math.Vector2;

@@ -27,11 +27,11 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.preferences.SimplePreferences;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
-import vn.com.minhhai3b.flappybird.Entity.Bird;
-import vn.com.minhhai3b.flappybird.Entity.Bird.STATE;
-import vn.com.minhhai3b.flappybird.Entity.Pipe;
-import vn.com.minhhai3b.flappybird.Entity.ScoreSprite;
-import vn.com.minhhai3b.flappybird.data.GameConfig;
+import vn.com.minhhai3b.flappybird.config.GameConfig;
+import vn.com.minhhai3b.flappybird.entity.Bird;
+import vn.com.minhhai3b.flappybird.entity.Pipe;
+import vn.com.minhhai3b.flappybird.entity.ScoreSprite;
+import vn.com.minhhai3b.flappybird.entity.Bird.STATE;
 import android.view.KeyEvent;
 
 import com.badlogic.gdx.math.Vector2;
