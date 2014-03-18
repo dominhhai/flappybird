@@ -10,6 +10,6 @@ package vn.com.minhhai3b.flappybird.config;
 
 public class GameConfig {
 	
-	public static final float VELOCITY = (float) 80.0;
+	public static final float VELOCITY = 80.0f;
 
 }
