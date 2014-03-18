@@ -49,23 +49,23 @@ public class Pipe {
 	
 	private boolean birdPass = false;
 	
-	public Pipe(PlayScene scene, int type, float px, float top, float range) {
-		this.playScene = scene;
-		this.type = type;
-		Texture atlas = GameConfig.getInstance().getAtlas();
-		Map<String, int[]> atlasInfo = GameConfig.getInstance().getAtlasInfo();
-		String resource = (type == 0) ? "pipe" : "pipe2";
+	public Pipe(PlayScene pScene, int pType, float pX, float pTop, float pRange) {
+		this.playScene = pScene;
+		this.type = pType;
+		Texture atlas = pScene.getAtlas();
+		Map<String, int[]> atlasInfo = pScene.getAtlasInfo();
+		String resource = (pType == 0) ? "pipe" : "pipe2";
 		
 		final int[] upInfo = atlasInfo.get(resource + "_down");
 		final int[] downInfo = atlasInfo.get(resource + "_up");
 		TextureRegion upRegion = new TextureRegion(atlas, upInfo[2], upInfo[3], upInfo[0], upInfo[1]);
 		TextureRegion downRegion = new TextureRegion(atlas, downInfo[2], downInfo[3], downInfo[0], downInfo[1]);
 		
-		float ptop = top - upInfo[1];
-		float pbottom = top + range;		
-		this.sprTop = new Sprite(px, ptop, upRegion, scene.getVertexBufferObjectManager());
-		this.sprBottom = new Sprite(px, pbottom, downRegion, scene.getVertexBufferObjectManager());
-		PhysicsWorld physicsWorld = ((PlayScene)scene).getPhysicsWorld();
+		float ptop = pTop - upInfo[1];
+		float pbottom = pTop + pRange;		
+		this.sprTop = new Sprite(pX, ptop, upRegion, pScene.getVertexBufferObjectManager());
+		this.sprBottom = new Sprite(pX, pbottom, downRegion, pScene.getVertexBufferObjectManager());
+		PhysicsWorld physicsWorld = ((PlayScene)pScene).getPhysicsWorld();
 		this.sprTopBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprTop, BodyType.KinematicBody, FIXTURE_DEF);
 		this.sprBottomBody = PhysicsFactory.createBoxBody(physicsWorld, this.sprBottom, BodyType.KinematicBody, FIXTURE_DEF);
 		this.sprTopBody.setUserData(Pipe.PIPE);

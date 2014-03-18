@@ -20,7 +20,6 @@ import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import vn.com.minhhai3b.flappybird.MainGameActivity;
-import vn.com.minhhai3b.flappybird.data.GameConfig;
 import vn.com.minhhai3b.flappybird.scene.GScene;
 import vn.com.minhhai3b.flappybird.scene.PlayScene;
 
@@ -63,10 +62,10 @@ public class Bird {
 		this(scene, physics, type, POSITION[0], POSITION[1]);
 	}
 	
-	public Bird (GScene scene, boolean physics, int type, float x, float y) {
-		this.type = type;
-		this.gScene = scene;
-		this.scene = scene.getScene();
+	public Bird (GScene pScene, boolean pPhysics, int pType, float pX, float pY) {
+		this.type = pType;
+		this.gScene = pScene;
+		this.scene = pScene.getScene();
 		String resource;
 		if (this.type == 0) {
 			resource = "bird2";
@@ -76,8 +75,8 @@ public class Bird {
 			resource = "bird0";
 		}
 		
-		Texture atlas = GameConfig.getInstance().getAtlas();
-		Map<String, int[]> atlasInfo = GameConfig.getInstance().getAtlasInfo();
+		Texture atlas = pScene.getAtlas();
+		Map<String, int[]> atlasInfo = pScene.getAtlasInfo();
 		
 		final int[] charInfo_0 = atlasInfo.get(resource + "_0");
 		final int[] charInfo_1 = atlasInfo.get(resource + "_1");
@@ -86,23 +85,23 @@ public class Bird {
 		TextureRegion charRegion_1 = new TextureRegion(atlas, charInfo_1[2], charInfo_1[3], charInfo_1[0], charInfo_1[1]);
 		TextureRegion charRegion_2 = new TextureRegion(atlas, charInfo_2[2], charInfo_2[3], charInfo_2[0], charInfo_2[1]);
 		TiledTextureRegion charRegion = new TiledTextureRegion(atlas, charRegion_0, charRegion_1, charRegion_2);
-		this.bird = new AnimatedSprite(x, y, charRegion, gScene.getVertexBufferObjectManager());
+		this.bird = new AnimatedSprite(pX, pY, charRegion, gScene.getVertexBufferObjectManager());
 		this.scene.attachChild(this.bird);
-		if (physics) {
+		if (pPhysics) {
 			bird.animate(new long[]{100, 100, 100});
 			PhysicsWorld physicsWorld = ((PlayScene)this.gScene).getPhysicsWorld();
-			final Rectangle birdRec = new Rectangle(x + 9, y + 9, 20, 20, gScene.getVertexBufferObjectManager());
+			final Rectangle birdRec = new Rectangle(pX + 9, pY + 9, 20, 20, gScene.getVertexBufferObjectManager());
 			this.birdBody = PhysicsFactory.createCircleBody(physicsWorld, birdRec, BodyType.DynamicBody, Bird.FIXTURE_DEF);
 			this.birdBody.setUserData(Bird.BIRD);
 			physicsWorld.registerPhysicsConnector(new PhysicsConnector(this.bird, this.birdBody, true, false));
 			this.state = STATE.NOT_MOVE;
 			this.birdBody.setActive(false);
 			// fly
-			this.bird.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveYModifier(0.4f, y - 5, y + 5), new MoveYModifier(0.4f, y + 5, y - 5))));
+			this.bird.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveYModifier(0.4f, pY - 5, pY + 5), new MoveYModifier(0.4f, pY + 5, pY - 5))));
 		} else {
 			this.bird.animate(new long[]{150, 150, 150});
 			// fly
-			this.bird.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveYModifier(0.6f, y - 30, y + 10), new MoveYModifier(0.6f, y + 10, y - 30))));
+			this.bird.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveYModifier(0.6f, pY - 30, pY + 10), new MoveYModifier(0.6f, pY + 10, pY - 30))));
 		}
 				
 	}

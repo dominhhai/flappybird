@@ -48,6 +48,14 @@ public abstract class GScene {
 		return this.vertexBufferObjectManager;
 	}
 	
+	public Map<String, int[]> getAtlasInfo() {
+		return this.atlasInfo;
+	}
+	
+	public Texture getAtlas() {
+		return this.atlas;
+	}
+	
 	public void setUserData(Object userData) {
 		this.userData = userData;
 	}

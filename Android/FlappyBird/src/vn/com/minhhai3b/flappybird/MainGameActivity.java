@@ -21,7 +21,6 @@ import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 
-import vn.com.minhhai3b.flappybird.data.GameConfig;
 import vn.com.minhhai3b.flappybird.scene.MainMenuScene;
 import android.content.Context;
 import android.view.KeyEvent;
@@ -59,7 +58,6 @@ public class MainGameActivity extends SimpleBaseGameActivity {
 		this.atlasInfo = this.decodeAtlasInfo();
 		this.atlas = this.decodeAtlasTexture();
 		this.atlas.load();
-		GameConfig.getInstance().setAtlas(this.atlas, this.atlasInfo);
 		this.sounds = this.loadSound();
 	}
 
