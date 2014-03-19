@@ -27,7 +27,7 @@ public class ScoreSprite {
 		this.tiledTextureRegion = pTiledTextureRegion;
 		this.width = pTiledTextureRegion.getWidth(0);
 		this.margin = margin;
-		this.x = (margin == 0) ? (x-this.width / 2) : x;
+		this.x = (margin == 0) ? (x - this.width / 2) : x;
 		this.y = y;
 	}
 	
