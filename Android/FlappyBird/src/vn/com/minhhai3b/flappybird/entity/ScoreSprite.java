@@ -26,9 +26,9 @@ public class ScoreSprite {
 		this.scoreSpriteList = new ArrayList<AnimatedSprite>();
 		this.tiledTextureRegion = pTiledTextureRegion;
 		this.width = pTiledTextureRegion.getWidth(0);
-		this.x = x;
-		this.y = y;
 		this.margin = margin;
+		this.x = (margin == 0) ? (x-this.width / 2) : x;
+		this.y = y;
 	}
 	
 	public void setScore(int score) {
