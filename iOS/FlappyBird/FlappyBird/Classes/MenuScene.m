@@ -8,7 +8,7 @@
 
 #import "MenuScene.h"
 #import "GameConfig.h"
-
+#import "CCAnimation.h"
 
 @implementation MenuScene
 
@@ -65,6 +65,20 @@ CCSprite *footer_1;
     bird.position = birdPosition;
     [title runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:[CCActionMoveTo actionWithDuration:0.45 position:ccp(titlePosition.x, titlePosition.y - 5)], [CCActionMoveTo actionWithDuration:0.45 position:ccp(titlePosition.x, titlePosition.y + 20)], nil]]];
     [bird runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:[CCActionMoveTo actionWithDuration:0.45 position:ccp(birdPosition.x, birdPosition.y - 5)], [CCActionMoveTo actionWithDuration:0.45 position:ccp(birdPosition.x, birdPosition.y + 20)], nil]]];
+    // bird animatin
+    NSMutableArray* spriteFrames = [NSMutableArray array];
+    for (int i = 0; i < 3; i ++) {
+        NSString *resource = [NSString stringWithFormat:@"bird0_%i", i];
+        NSArray *charInfo = [atlasInfo objectForKey:resource];
+        NSLog(@"Cur: %i: %@", i, resource);
+        CGSize birdSizeInPixels = CGSizeMake([[charInfo objectAtIndex:1] intValue], [[charInfo objectAtIndex:2] intValue]);
+        CGRect birdRectInPixels = {CGPointMake([[charInfo objectAtIndex:3] intValue], [[charInfo objectAtIndex:4] intValue]), birdSizeInPixels};
+        CCSpriteFrame* spriteFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:birdRectInPixels rotated:NO offset:CGPointZero originalSize:birdSizeInPixels];
+        [spriteFrames addObject:spriteFrame];
+    }
+    CCAnimation* animation = [CCAnimation animationWithSpriteFrames: spriteFrames delay:0.1];
+    CCActionAnimate* actionAnimate = [CCActionAnimate actionWithAnimation:animation];
+    [bird runAction:[CCActionRepeatForever actionWithAction:actionAnimate]];
     [self addChild:title];
     [self addChild:bird];
     // btn Play

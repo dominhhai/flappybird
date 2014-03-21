@@ -7,7 +7,29 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "cocos2d.h"
+
+typedef enum {
+    STAND,
+    JUMP,
+    DOWN,
+    DIE,
+    PAUSE
+} BirdState;
+
+typedef enum {
+    RED,
+    BLUE,
+    YELLOW
+} BirdType;
 
 @interface Bird : NSObject
+@property BirdState state;
+@property CCSprite* sprBird;
+@property BirdType type;
+@property CCScene* scene;
+
+-(id) initWithType:(BirdType)pType position:(CGPoint)pPos scene:(CCScene*)pScene;
+-(void)setState:(BirdState)state;
 
 @end
