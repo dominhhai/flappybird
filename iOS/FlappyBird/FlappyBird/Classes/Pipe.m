@@ -10,4 +10,13 @@
 
 @implementation Pipe
 
+@synthesize scene, type, sprTop, sprBottom;
+
+-(id)initWithType:(PipeType)pType posX:(float)pX topY:(float)pTop range:(float)pRange scene:(CCScene*)pScene {
+    self = [super init];
+    if(!self) return nil;
+    
+    return self;
+}
+
 @end

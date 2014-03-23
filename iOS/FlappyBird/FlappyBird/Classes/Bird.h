@@ -10,17 +10,17 @@
 #import "cocos2d.h"
 
 typedef enum {
-    STAND,
-    JUMP,
-    DOWN,
-    DIE,
-    PAUSE
+    BIRD_STATE_STAND,
+    BIRD_STATE_JUMP,
+    BIRD_STATE_DOWN,
+    BIRD_STATE_DIE,
+    BIRD_STATE_PAUSE
 } BirdState;
 
 typedef enum {
-    RED,
-    BLUE,
-    YELLOW
+    BIRD_TYPE_YELLOW,
+    BIRD_TYPE_BLUE,
+    BIRD_TYPE_RED
 } BirdType;
 
 @interface Bird : NSObject
@@ -30,6 +30,7 @@ typedef enum {
 @property CCScene* scene;
 
 -(id) initWithType:(BirdType)pType position:(CGPoint)pPos scene:(CCScene*)pScene;
--(void)setState:(BirdState)state;
+//-(void)setState:(BirdState)state;
+//-(BirdState)getState;
 
 @end

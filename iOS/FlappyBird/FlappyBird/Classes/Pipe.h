@@ -10,8 +10,8 @@
 #import "cocos2d.h"
 
 typedef enum {
-    RED,
-    BLUE
+    PIPE_RED,
+    PIPE_BLUE
 } PipeType;
 
 @interface Pipe : NSObject

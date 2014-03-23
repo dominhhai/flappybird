@@ -8,7 +8,6 @@
 // -----------------------------------------------------------------------
 #import "AppDelegate.h"
 #import "MenuScene.h"
-#import "HelloWorldScene.h"
 #import "GameConfig.h"
 
 @implementation AppDelegate

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C81B60E718D32DB900421D08 /* PlayScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C81B60E618D32DB900421D08 /* PlayScene.m */; };
 		C81E34F218DC642300982F0A /* Pipe.m in Sources */ = {isa = PBXBuildFile; fileRef = C81E34F118DC642300982F0A /* Pipe.m */; };
+		C84718CE18DEB9EF002BCD94 /* Footer.m in Sources */ = {isa = PBXBuildFile; fileRef = C84718CD18DEB9EF002BCD94 /* Footer.m */; };
 		C8F6473A18C9CD3100CBF405 /* GameConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6473918C9CD3100CBF405 /* GameConfig.m */; };
 		C8F6474018C9CEA100CBF405 /* MenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6473F18C9CEA100CBF405 /* MenuScene.m */; };
 		C8F6474318C9D3D600CBF405 /* Bird.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6474218C9D3D600CBF405 /* Bird.m */; };
@@ -232,6 +233,8 @@
 		C81B60E618D32DB900421D08 /* PlayScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayScene.m; path = Classes/PlayScene.m; sourceTree = "<group>"; };
 		C81E34F018DC642300982F0A /* Pipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pipe.h; path = Classes/Pipe.h; sourceTree = "<group>"; };
 		C81E34F118DC642300982F0A /* Pipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pipe.m; path = Classes/Pipe.m; sourceTree = "<group>"; };
+		C84718CC18DEB9EF002BCD94 /* Footer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Footer.h; path = Classes/Footer.h; sourceTree = "<group>"; };
+		C84718CD18DEB9EF002BCD94 /* Footer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Footer.m; path = Classes/Footer.m; sourceTree = "<group>"; };
 		C8F6473818C9CD3100CBF405 /* GameConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameConfig.h; path = Classes/GameConfig.h; sourceTree = "<group>"; };
 		C8F6473918C9CD3100CBF405 /* GameConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameConfig.m; path = Classes/GameConfig.m; sourceTree = "<group>"; };
 		C8F6473E18C9CEA100CBF405 /* MenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuScene.h; path = Classes/MenuScene.h; sourceTree = "<group>"; };
@@ -1561,6 +1564,8 @@
 				C81B60E618D32DB900421D08 /* PlayScene.m */,
 				C81E34F018DC642300982F0A /* Pipe.h */,
 				C81E34F118DC642300982F0A /* Pipe.m */,
+				C84718CC18DEB9EF002BCD94 /* Footer.h */,
+				C84718CD18DEB9EF002BCD94 /* Footer.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1808,6 +1813,7 @@
 				C8F6474318C9D3D600CBF405 /* Bird.m in Sources */,
 				C81B60E718D32DB900421D08 /* PlayScene.m in Sources */,
 				C81E34F218DC642300982F0A /* Pipe.m in Sources */,
+				C84718CE18DEB9EF002BCD94 /* Footer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
