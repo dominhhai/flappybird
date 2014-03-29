@@ -10,7 +10,6 @@
 #import "GameConfig.h"
 #import "Footer.h"
 #import "Bird.h"
-#import "Pipe.h"
 
 @implementation PlayScene
 
@@ -22,6 +21,9 @@ CCButton* btnResume;
 CCSpriteFrame *btnResumeFrame, *btnPauseFrame;
 CCSprite *sprReadyText, *sprTutorial;
 Bird* bird;
+bool isPause = NO;
+NSMutableArray* activePipes;
+float REAL_HEIGHT;
 
 
 + (PlayScene *)scene {
@@ -46,8 +48,6 @@ Bird* bird;
     background.scaleX = ratio.width;
     background.scaleY = ratio.height;
     [self addChild:background];
-    // footer
-    footer = [[Footer alloc] initWithScene:self];
     // tutorial
     NSArray * readyTextInfo = [atlasInfo objectForKey:@"text_ready"];
     NSArray * tutorialInfo = [atlasInfo objectForKey:@"tutorial"];
@@ -75,25 +75,81 @@ Bird* bird;
     [btnResume setTarget:self selector:@selector(onBtnResumeClicked:)];
     [btnResume setUserObject:@"pause"];    
     // bird
-    bird = [[Bird alloc] initWithType:BIRD_TYPE_YELLOW position:ccp(self.contentSize.width / 4 + 24, self.contentSize.height / 2 + 16) scene:self];
+    bird = [[Bird alloc] initWithType:arc4random_uniform(3) position:ccp(self.contentSize.width / 4 + 24, self.contentSize.height / 2 + 16) scene:self];
+    // pipes
+    activePipes = [[NSMutableArray alloc] initWithCapacity:4];
     
+    for (int i = 0; i < 3; i ++) {
+        PipePosition position = [self genPipePosition:320];
+        Pipe *pipe = [[Pipe alloc] initWithType:PIPE_BLUE position:position scene:self];
+        [activePipes addObject:pipe];
+    }
+    
+    // footer
+    footer = [[Footer alloc] initWithScene:self];
+    REAL_HEIGHT = self.contentSize.height - footer.spr_1.position.y - footer.spr_1.contentSize.height / 2;
     return self;
 }
 
 - (void)onBtnResumeClicked:(id)sender {
     NSString* userObject = (NSString*)btnResume.userObject;
     if ([userObject isEqualToString:@"pause"]) {
+        [self pauseGame];
         [btnResume setUserObject:@"resume"];        
         [btnResume setBackgroundSpriteFrame:btnResumeFrame forState:CCControlStateNormal];
     } else {
+        [self resumeGame];
         [btnResume setUserObject:@"pause"];
         [btnResume setBackgroundSpriteFrame:btnPauseFrame forState:CCControlStateNormal];
     }
 }
 
+-(PipePosition) genPipePosition:(float)pipeH {
+    PipePosition position;
+    float lastPosX = 0;
+    for (int i = activePipes.count - 1; i >= 0; i --) {
+        float pipeX = ((Pipe*)[activePipes objectAtIndex:i]).sprTop.position.x;
+        if (pipeX > 0 && pipeX > lastPosX) {
+            lastPosX = pipeX;
+        }
+    }
+    // R = [70, 150]
+    // ht = [10, Ht]
+    // X = 150
+    if (lastPosX == 0) {
+        lastPosX = self.contentSize.width;
+    }
+    position.x = lastPosX + arc4random_uniform(50) + 200;
+    position.top = drand48() * (pipeH - 60) + 60;
+    position.range = drand48() * (120 - 55) + 55;
+    if (position.top + position.range + pipeH < REAL_HEIGHT) {
+        position.range = REAL_HEIGHT - (position.top + pipeH);
+    }
+    position.top = self.contentSize.height - position.top;
+    NSLog(@"new pos: %f, %f, %f", position.x, position.top, position.range);
+    return position;
+}
+
+
+-(void) pauseGame {
+    isPause = YES;
+}
+
+-(void) resumeGame {
+    isPause = NO;
+}
+
 -(void) update:(CCTime)delta {
+    if (isPause) {
+        return;
+    }
 	[footer update:delta];
-    [bird update:delta];
+    if (bird.state != BIRD_STATE_STAND) {
+        [bird update:delta];
+        for (int i = activePipes.count - 1; i >= 0; i--) {
+            [((Pipe*)[activePipes objectAtIndex:i]) update:delta];
+        }
+    }
 }
 
 - (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -102,7 +158,7 @@ Bird* bird;
         [self removeChild:sprReadyText cleanup:true];
         [self removeChild:sprTutorial cleanup:true];
         [bird doState:BIRD_STATE_DOWN];
-    } else {
+    } else if (!isPause) {
         CCLOG(@"Received a JUMP");
     }
 }

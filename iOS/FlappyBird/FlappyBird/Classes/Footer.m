@@ -26,13 +26,13 @@
     CGRect footerRectInPixels = CGRectMake([[footerinfo objectAtIndex:3] intValue], [[footerinfo objectAtIndex:4] intValue], [[footerinfo objectAtIndex:1] intValue], [[footerinfo objectAtIndex:2] intValue]);
     self.spr_1 = [CCSprite spriteWithTexture:atlas rect:footerRectInPixels];
     self.spr_2 = [CCSprite spriteWithTexture:atlas rect:footerRectInPixels];
-    self.spr_1.position = ccp(self.spr_1.contentSize.width / 2, self.spr_1.contentSize.height / 2);
+    self.spr_1.position = ccp(self.spr_1.contentSize.width / 2, self.spr_1.contentSize.height / 4);
     self.spr_2.position = ccp(self.spr_1.contentSize.width * 3 / 2, self.spr_1.position.y);
     [self.scene addChild:self.spr_1];
     [self.scene addChild:self.spr_2];
     NSArray *copyinfo = [atlasInfo objectForKey:@"brand_copyright"];
     CCSprite *copy = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[copyinfo objectAtIndex:3] intValue], [[copyinfo objectAtIndex:4] intValue], [[copyinfo objectAtIndex:1] intValue], [[copyinfo objectAtIndex:2] intValue])];
-    copy.position = ccp(self.scene.contentSize.width / 2, self.spr_1.contentSize.height / 2 );
+    copy.position = ccp(self.scene.contentSize.width / 2, self.spr_1.position.y);
     [self.scene addChild:copy];
     
     return self;

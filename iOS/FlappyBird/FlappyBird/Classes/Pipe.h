@@ -14,11 +14,19 @@ typedef enum {
     PIPE_BLUE
 } PipeType;
 
+typedef struct PipePositon {
+    float x;
+    float top;
+    float range;
+} PipePosition;
+
 @interface Pipe : NSObject
 @property PipeType type;
 @property CCSprite* sprTop;
 @property CCSprite* sprBottom;
 @property CCScene* scene;
 
--(id)initWithType:(PipeType)pType posX:(float)pX topY:(float)pTop range:(float)pRange scene:(CCScene*)pScene;
+-(id)initWithType:(PipeType)pType position:(PipePosition)position scene:(CCScene*)pScene;
+-(void) update:(CCTime)delta;
+
 @end

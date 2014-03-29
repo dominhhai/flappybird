@@ -9,10 +9,18 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 #import "cocos2d-ui.h"
+#import "Pipe.h"
 
 @interface PlayScene : CCScene
 
 + (PlayScene *)scene;
 - (id)init;
+
+-(PipePosition) genPipePosition:(float)pipeH;
+
+
+//-(void) pauseGame;
+//
+//-(void) resumeGame;
 
 @end

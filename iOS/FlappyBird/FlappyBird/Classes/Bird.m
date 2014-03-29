@@ -14,6 +14,8 @@
 
 @synthesize scene, sprBird, state, type, POSITION;
 
+CCActionRepeatForever* moveAction;
+
 -(id) initWithType:(BirdType)pType position:(CGPoint)pPos scene:(CCScene*)pScene {
     self = [super init];
     if (!self) return(nil);
@@ -39,7 +41,8 @@
     }
     self.sprBird = [CCSprite spriteWithSpriteFrame:[spriteFrames objectAtIndex:0]];
     self.sprBird.position = pPos;
-    [self.sprBird runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:[CCActionMoveTo actionWithDuration:0.45 position:ccp(pPos.x, pPos.y - 5)], [CCActionMoveTo actionWithDuration:0.45 position:ccp(pPos.x, pPos.y + 20)], nil]]];
+    moveAction = [CCActionRepeatForever actionWithAction:[CCActionSequence actions:[CCActionMoveTo actionWithDuration:0.45 position:ccp(pPos.x, pPos.y - 5)], [CCActionMoveTo actionWithDuration:0.45 position:ccp(pPos.x, pPos.y + 20)], nil]];
+    [self.sprBird runAction:moveAction];
 
     CCAnimation* animation = [CCAnimation animationWithSpriteFrames: spriteFrames delay:0.1];
     CCActionAnimate* actionAnimate = [CCActionAnimate actionWithAnimation:animation];
@@ -53,12 +56,15 @@
     if (self.state != BIRD_STATE_STAND && self.state != BIRD_STATE_DIE) {
         CGPoint position = self.sprBird.position;
         position.y = self.sprBird.position.y - GRAVITY + velocity;
-        self.sprBird.position = position;
+//        self.sprBird.position = position;
     }
 }
 
 -(void) doState:(BirdState)pState {
-    self.state = pState;
+    if (self.state == BIRD_STATE_STAND) {
+        [self.sprBird stopAction:moveAction];
+    }
+    self.state = pState;    
 }
 
 @end
