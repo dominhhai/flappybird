@@ -15,6 +15,8 @@
 @synthesize scene, sprBird, state, type, POSITION;
 
 CCActionRepeatForever* moveAction;
+CCActionSequence* rotateAction;
+
 double curVeclocity;
 
 double timePass;
@@ -81,11 +83,16 @@ double timePass;
 -(void) doState:(BirdState)pState {
     if (self.state == BIRD_STATE_STAND) {
         [self.sprBird stopAction:moveAction];
+        rotateAction = [CCActionSequence actions:[CCActionRotateTo actionWithDuration:0.3 angle:-35], [CCActionRotateTo actionWithDuration:1.5 angle:80], nil];
     }
     self.state = pState;
     if (pState == BIRD_STATE_JUMP) {
         timePass = 0;
         velocity = curVeclocity < 1.5 ? 4 : curVeclocity + 0.15;
+        if (rotateAction != nil) {
+            [self.sprBird stopAction:rotateAction];
+        }
+        [self.sprBird runAction:rotateAction];
     }
 }
 

@@ -157,6 +157,9 @@ int score;
         for (int i = activePipes.count - 1; i >= 0; i--) {
             [((Pipe*)[activePipes objectAtIndex:i]) update:delta];
         }
+        
+        // collision detection
+        
     }
 }
 
