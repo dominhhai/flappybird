@@ -38,5 +38,6 @@ typedef enum {
 -(id) initWithType:(BirdType)pType position:(CGPoint)pPos scene:(CCScene*)pScene;
 -(void) update:(CCTime)delta;
 -(void) doState:(BirdState)pState;
+-(CGRect) getRect;
 
 @end

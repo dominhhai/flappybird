@@ -75,4 +75,18 @@ float BIRD_X;
     }
 }
 
+-(CGRect) getTopRect {
+    CGSize size = CGSizeMake(self.sprTop.contentSize.width - 8, self.sprTop.contentSize.height - 8);
+    CGPoint pos = ccp(self.sprTop.position.x - size.width / 2, self.sprTop.position.y - size.height / 2);
+    CGRect rect = {pos, size};
+    return rect;
+}
+
+-(CGRect) getBottomRect {
+    CGSize size = CGSizeMake(self.sprBottom.contentSize.width - 8, self.sprBottom.contentSize.height - 8);
+    CGPoint pos = ccp(self.sprBottom.position.x - size.width / 2, self.sprBottom.position.y - size.height / 2);
+    CGRect rect = {pos, size};
+    return rect;
+}
+
 @end

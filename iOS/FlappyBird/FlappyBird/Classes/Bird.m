@@ -34,7 +34,7 @@ double timePass;
     CCTexture *atlas = GameConfig.atlas;
     
     NSString* birdBaseResource = [NSString stringWithFormat:@"bird%i_", pType];
-    // bird animatin
+    // bird animation
     NSMutableArray* spriteFrames = [NSMutableArray array];
     for (int i = 0; i < 3; i ++) {
         NSString *resource = [NSString stringWithFormat:@"%@%i", birdBaseResource, i];
@@ -66,8 +66,8 @@ double timePass;
         y += curVeclocity;
         timePass += delta;
 
-        float minPos = self.sprBird.contentSize.height;
-        float maxPos = self.scene.contentSize.height - self.sprBird.contentSize.height;;
+        float minPos = 0;
+        float maxPos = self.scene.contentSize.height - self.sprBird.contentSize.height / 2;
         if (y < minPos) {
             y = minPos;
         } else if (y > maxPos) {
@@ -94,6 +94,13 @@ double timePass;
         }
         [self.sprBird runAction:rotateAction];
     }
+}
+
+-(CGRect) getRect {
+    CGSize size = CGSizeMake(self.sprBird.contentSize.width - 7, self.sprBird.contentSize.height - 7);
+    CGPoint pos = ccp(self.sprBird.position.x - size.width / 2, self.sprBird.position.y - size.height / 2);
+    CGRect rect = {pos, size};
+    return rect;
 }
 
 @end

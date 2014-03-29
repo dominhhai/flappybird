@@ -28,5 +28,7 @@ typedef struct PipePositon {
 
 -(id)initWithType:(PipeType)pType position:(PipePosition)position scene:(CCScene*)pScene birdPos:(float) pBirdX;
 -(void) update:(CCTime)delta;
+-(CGRect) getTopRect;
+-(CGRect) getBottomRect;
 
 @end

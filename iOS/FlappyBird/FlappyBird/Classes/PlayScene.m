@@ -151,15 +151,34 @@ int score;
     if (isPause) {
         return;
     }
-	[footer update:delta];
-    if (bird.state != BIRD_STATE_STAND) {
-        [bird update:delta];
-        for (int i = activePipes.count - 1; i >= 0; i--) {
-            [((Pipe*)[activePipes objectAtIndex:i]) update:delta];
+    if (bird.state != BIRD_STATE_DIE) {
+        [footer update:delta];
+    }
+	
+    if (bird.state != BIRD_STATE_STAND && bird.state != BIRD_STATE_DIE) {
+        // Ground collision detection
+        float birdY = bird.sprBird.position.y - bird.sprBird.contentSize.height / 2 + 7;
+        float groundY = footer.spr_1.position.y + footer.spr_1.contentSize.height / 2 - 7;
+        if (birdY <= groundY) {
+            // collision
+            bird.sprBird.position = ccp(bird.sprBird.position.x, groundY + bird.sprBird.contentSize.height / 2);
+            [bird doState:BIRD_STATE_DIE];
+            NSLog(@"Collision with Ground");            
         }
-        
-        // collision detection
-        
+        // bird RECT
+        CGRect birdRect = [bird getRect];
+        for (int i = activePipes.count - 1; i >= 0; i--) {
+            Pipe *curPipe = (Pipe*)[activePipes objectAtIndex:i];
+            // Pipe collision detection
+            CGRect curPipeTopRect = [curPipe getTopRect];
+            CGRect curPipeBottomRect = [curPipe getBottomRect];
+            if (CGRectIntersectsRect(birdRect, curPipeTopRect) || CGRectIntersectsRect(birdRect, curPipeBottomRect)){
+                [bird doState:BIRD_STATE_DIE];
+                NSLog(@"Collision with pipe");
+            }
+            [curPipe update:delta];
+        }
+        [bird update:delta];
     }
 }
 
@@ -169,8 +188,7 @@ int score;
         [self removeChild:sprReadyText cleanup:true];
         [self removeChild:sprTutorial cleanup:true];
         [bird doState:BIRD_STATE_JUMP];
-    } else if (!isPause) {
-        CCLOG(@"Received a JUMP");
+    } else if (!isPause && bird.state != BIRD_STATE_DIE) {
         [bird doState:BIRD_STATE_JUMP];
     }
 }
