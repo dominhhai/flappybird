@@ -76,11 +76,10 @@ int score;
     btnResume = [CCButton buttonWithTitle:@"" spriteFrame:btnPauseFrame];
     btnResume.position = ccp(10 + btnResume.contentSize.width / 2, self.contentSize.height - 10 - btnResume.contentSize.height / 2);
     [btnResume setTarget:self selector:@selector(onBtnResumeClicked:)];
-    [btnResume setUserObject:@"pause"];    
-    // bird
-    CGPoint birdPosition = ccp(self.contentSize.width / 4 + 24, self.contentSize.height / 2 + 16);
-    bird = [[Bird alloc] initWithType:arc4random_uniform(3) position:birdPosition scene:self];
+    [btnResume setUserObject:@"pause"];
+    
     // pipes
+    CGPoint birdPosition = ccp(self.contentSize.width / 4 + 24, self.contentSize.height / 2 + 16);
     activePipes = [[NSMutableArray alloc] initWithCapacity:4];
     
     for (int i = 0; i < 3; i ++) {
@@ -88,10 +87,11 @@ int score;
         Pipe *pipe = [[Pipe alloc] initWithType:PIPE_BLUE position:position scene:self birdPos:birdPosition.x];
         [activePipes addObject:pipe];
     }
-    
     // footer
     footer = [[Footer alloc] initWithScene:self];
     REAL_HEIGHT = self.contentSize.height - footer.spr_1.position.y - footer.spr_1.contentSize.height / 2;
+    // bird
+    bird = [[Bird alloc] initWithType:arc4random_uniform(3) position:birdPosition scene:self];
     
     return self;
 }
@@ -165,9 +165,10 @@ int score;
         [self addChild:btnResume];
         [self removeChild:sprReadyText cleanup:true];
         [self removeChild:sprTutorial cleanup:true];
-        [bird doState:BIRD_STATE_DOWN];
+        [bird doState:BIRD_STATE_JUMP];
     } else if (!isPause) {
         CCLOG(@"Received a JUMP");
+        [bird doState:BIRD_STATE_JUMP];
     }
 }
 

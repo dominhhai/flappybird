@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 
-static const float GRAVITY = 5;
+static const float GRAVITY = 10;
 
 typedef enum {
     BIRD_STATE_STAND,

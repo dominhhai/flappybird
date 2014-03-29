@@ -15,6 +15,9 @@
 @synthesize scene, sprBird, state, type, POSITION;
 
 CCActionRepeatForever* moveAction;
+double curVeclocity;
+
+double timePass;
 
 -(id) initWithType:(BirdType)pType position:(CGPoint)pPos scene:(CCScene*)pScene {
     self = [super init];
@@ -55,8 +58,23 @@ CCActionRepeatForever* moveAction;
 -(void) update:(CCTime)delta {
     if (self.state != BIRD_STATE_STAND && self.state != BIRD_STATE_DIE) {
         CGPoint position = self.sprBird.position;
-        position.y = self.sprBird.position.y - GRAVITY + velocity;
-//        self.sprBird.position = position;
+        float y = position.y;
+        curVeclocity = velocity - GRAVITY * timePass;
+//        NSLog(@"delta: %f; vec: %f; time: %f", delta, curVeclocity, timePass);
+        y += curVeclocity;
+        timePass += delta;
+
+        float minPos = self.sprBird.contentSize.height;
+        float maxPos = self.scene.contentSize.height - self.sprBird.contentSize.height;;
+        if (y < minPos) {
+            y = minPos;
+        } else if (y > maxPos) {
+            y = maxPos;
+        }
+        
+        position.y = y;
+        
+        self.sprBird.position = position;
     }
 }
 
@@ -64,7 +82,11 @@ CCActionRepeatForever* moveAction;
     if (self.state == BIRD_STATE_STAND) {
         [self.sprBird stopAction:moveAction];
     }
-    self.state = pState;    
+    self.state = pState;
+    if (pState == BIRD_STATE_JUMP) {
+        timePass = 0;
+        velocity = curVeclocity < 1.5 ? 4 : curVeclocity + 0.15;
+    }
 }
 
 @end
