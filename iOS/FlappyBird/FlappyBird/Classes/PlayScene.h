@@ -17,7 +17,7 @@
 - (id)init;
 
 -(PipePosition) genPipePosition:(float)pipeH;
-
+-(void)increaseScore;
 
 //-(void) pauseGame;
 //

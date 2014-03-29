@@ -26,7 +26,7 @@ typedef struct PipePositon {
 @property CCSprite* sprBottom;
 @property CCScene* scene;
 
--(id)initWithType:(PipeType)pType position:(PipePosition)position scene:(CCScene*)pScene;
+-(id)initWithType:(PipeType)pType position:(PipePosition)position scene:(CCScene*)pScene birdPos:(float) pBirdX;
 -(void) update:(CCTime)delta;
 
 @end

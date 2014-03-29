@@ -24,6 +24,7 @@ Bird* bird;
 bool isPause = NO;
 NSMutableArray* activePipes;
 float REAL_HEIGHT;
+int score;
 
 
 + (PlayScene *)scene {
@@ -32,6 +33,8 @@ float REAL_HEIGHT;
 - (id)init {
     self = [super init];
     if (!self) return(nil);
+    
+    score = 0;
     
     [self setUserInteractionEnabled:YES];
     [self setMultipleTouchEnabled:NO];
@@ -75,19 +78,21 @@ float REAL_HEIGHT;
     [btnResume setTarget:self selector:@selector(onBtnResumeClicked:)];
     [btnResume setUserObject:@"pause"];    
     // bird
-    bird = [[Bird alloc] initWithType:arc4random_uniform(3) position:ccp(self.contentSize.width / 4 + 24, self.contentSize.height / 2 + 16) scene:self];
+    CGPoint birdPosition = ccp(self.contentSize.width / 4 + 24, self.contentSize.height / 2 + 16);
+    bird = [[Bird alloc] initWithType:arc4random_uniform(3) position:birdPosition scene:self];
     // pipes
     activePipes = [[NSMutableArray alloc] initWithCapacity:4];
     
     for (int i = 0; i < 3; i ++) {
         PipePosition position = [self genPipePosition:320];
-        Pipe *pipe = [[Pipe alloc] initWithType:PIPE_BLUE position:position scene:self];
+        Pipe *pipe = [[Pipe alloc] initWithType:PIPE_BLUE position:position scene:self birdPos:birdPosition.x];
         [activePipes addObject:pipe];
     }
     
     // footer
     footer = [[Footer alloc] initWithScene:self];
     REAL_HEIGHT = self.contentSize.height - footer.spr_1.position.y - footer.spr_1.contentSize.height / 2;
+    
     return self;
 }
 
@@ -126,10 +131,13 @@ float REAL_HEIGHT;
         position.range = REAL_HEIGHT - (position.top + pipeH);
     }
     position.top = self.contentSize.height - position.top;
-    NSLog(@"new pos: %f, %f, %f", position.x, position.top, position.range);
     return position;
 }
 
+-(void)increaseScore {
+    score ++;
+    NSLog(@"increase score: %i", score);
+}
 
 -(void) pauseGame {
     isPause = YES;

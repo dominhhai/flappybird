@@ -15,13 +15,18 @@
 @synthesize scene, type, sprTop, sprBottom;
 
 bool birdPass = NO;
+PlayScene * playScene;
+float BIRD_X;
 
--(id)initWithType:(PipeType)pType position:(PipePosition)position scene:(CCScene*)pScene {
+-(id)initWithType:(PipeType)pType position:(PipePosition)position scene:(CCScene*)pScene birdPos:(float) pBirdX {
     self = [super init];
     if(!self) return nil;
     
     self.scene = pScene;
     self.type = pType;
+    BIRD_X = pBirdX;
+    
+    playScene = (PlayScene*) pScene;
     
     NSMutableDictionary* atlasInfo = GameConfig.atlasInfo;
     CCTexture *atlas = GameConfig.atlas;
@@ -52,14 +57,15 @@ bool birdPass = NO;
     CGPoint topPos = self.sprTop.position;
     
     if (topPos.x < -sprTop.contentSize.width) {
-        PipePosition pos = [((PlayScene*) self.scene) genPipePosition:sprTop.contentSize.height];
+        PipePosition pos = [playScene genPipePosition:sprTop.contentSize.height];
         [self setPosition:pos];
         birdPass = NO;
         
         return;
     } else {
         CGPoint bottomPos = self.sprBottom.position;
-        if (topPos.x < 10) {
+        if (topPos.x < BIRD_X && !birdPass) {
+            [playScene increaseScore];
             birdPass = YES;
         }
         topPos.x -= 1;
