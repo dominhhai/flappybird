@@ -11,6 +11,7 @@
 @implementation GameConfig
 
 static NSMutableDictionary* atlasInfo;
+static CGSize ratio;
 
 + (NSMutableDictionary*) atlasInfo {
     @synchronized(self) {
@@ -26,6 +27,18 @@ static NSMutableDictionary* atlasInfo;
 +(CCTexture*) atlas {
     @synchronized(self) {
         return [[CCTextureCache sharedTextureCache] textureForKey:@"atlas.png"];
+    }
+}
+
++(void) setRatio:(CGSize)pSize {
+    @synchronized(self) {
+        ratio = pSize;
+    }
+}
+
++(CGSize)ratio {
+    @synchronized(self) {
+        return ratio;
     }
 }
 

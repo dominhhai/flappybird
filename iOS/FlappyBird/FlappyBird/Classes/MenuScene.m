@@ -40,6 +40,7 @@ Footer* footer;
     background.position = ccp(self.contentSize.width / 2, self.contentSize.height / 2);
     float scaleX = self.contentSize.width / background.contentSize.width;
     float scaleY = self.contentSize.height / background.contentSize.height;
+    [GameConfig setRatio:CGSizeMake(scaleX, scaleY)];
     background.scaleX = scaleX;
     background.scaleY = scaleY;
     [self addChild:background];

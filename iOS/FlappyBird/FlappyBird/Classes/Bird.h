@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 
+static const float GRAVITY = 5;
+
 typedef enum {
     BIRD_STATE_STAND,
     BIRD_STATE_JUMP,
@@ -23,14 +25,18 @@ typedef enum {
     BIRD_TYPE_RED
 } BirdType;
 
-@interface Bird : NSObject
+@interface Bird : NSObject {
+    float velocity;
+}
+
 @property BirdState state;
 @property CCSprite* sprBird;
 @property BirdType type;
 @property CCScene* scene;
+@property CGPoint POSITION;
 
 -(id) initWithType:(BirdType)pType position:(CGPoint)pPos scene:(CCScene*)pScene;
-//-(void)setState:(BirdState)state;
-//-(BirdState)getState;
+-(void) update:(CCTime)delta;
+-(void) doState:(BirdState)pState;
 
 @end

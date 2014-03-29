@@ -12,7 +12,7 @@
 
 @implementation Bird
 
-@synthesize scene, sprBird, state, type;
+@synthesize scene, sprBird, state, type, POSITION;
 
 -(id) initWithType:(BirdType)pType position:(CGPoint)pPos scene:(CCScene*)pScene {
     self = [super init];
@@ -21,6 +21,7 @@
     self.scene = pScene;
     self.type = pType;
     self.state = BIRD_STATE_STAND;
+    self.POSITION = pPos;
     
     NSMutableDictionary* atlasInfo = GameConfig.atlasInfo;
     CCTexture *atlas = GameConfig.atlas;
@@ -46,6 +47,18 @@
     [self.scene addChild:self.sprBird];
     
     return self;
+}
+
+-(void) update:(CCTime)delta {
+    if (self.state != BIRD_STATE_STAND && self.state != BIRD_STATE_DIE) {
+        CGPoint position = self.sprBird.position;
+        position.y = self.sprBird.position.y - GRAVITY + velocity;
+        self.sprBird.position = position;
+    }
+}
+
+-(void) doState:(BirdState)pState {
+    self.state = pState;
 }
 
 @end

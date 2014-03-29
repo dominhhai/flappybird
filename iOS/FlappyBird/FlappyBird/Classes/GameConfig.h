@@ -12,10 +12,13 @@
 
 @interface GameConfig : NSObject
 
-+ (NSMutableDictionary*) atlasInfo;
++(NSMutableDictionary*) atlasInfo;
 
-+ (void) setAtlasInfo:(NSMutableDictionary*)val;
++(void) setAtlasInfo:(NSMutableDictionary*)val;
 
 +(CCTexture*) atlas;
+
++(void) setRatio:(CGSize)pSize;
++(CGSize)ratio;
 
 @end
