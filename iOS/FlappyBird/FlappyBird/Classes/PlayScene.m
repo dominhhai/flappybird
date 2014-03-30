@@ -320,8 +320,10 @@ float groundY;
 
 -(void) resumeGame {
     isPause = NO;
-    [bird doState:BIRD_STATE_JUMP];
-    [[OALSimpleAudio sharedInstance] playEffect:@"sfx_wing.caf"];
+    if ((bird.state != BIRD_STATE_DIE && bird.state != BIRD_STATE_FAIL)) {
+    	[bird doState:BIRD_STATE_JUMP];
+    	[[OALSimpleAudio sharedInstance] playEffect:@"sfx_wing.caf"];
+    }
 }
 
 - (void)onBtnPlayClicked:(id)sender {
