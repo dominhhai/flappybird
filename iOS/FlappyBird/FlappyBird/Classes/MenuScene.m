@@ -75,6 +75,8 @@ Footer* footer;
     [btnScore setTarget:self selector:@selector(onBtnScoreClicked:)];
     [self addChild:btnScore];
     // done
+    [[OALSimpleAudio sharedInstance] playBg:@"sfx_swooshing.caf" loop:YES];
+    
 	return self;
 }
 

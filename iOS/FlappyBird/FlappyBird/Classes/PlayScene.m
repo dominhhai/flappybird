@@ -101,6 +101,8 @@ float groundY;
     scoreLabel.color = [CCColor whiteColor];
     scoreLabel.position = ccp(0.5f, 0.85f);
     [self addChild:scoreLabel];
+    // sound
+    [[OALSimpleAudio sharedInstance] playBg:@"sfx_swooshing.caf" loop:YES];
     
     return self;
 }
@@ -146,14 +148,7 @@ float groundY;
 -(void)increaseScore {
     score ++;
     scoreLabel.string = [NSString stringWithFormat:@"%i", score];
-}
-
--(void) pauseGame {
-    isPause = YES;
-}
-
--(void) resumeGame {
-    isPause = NO;
+    [[OALSimpleAudio sharedInstance] playEffect:@"sfx_point.aif"];
 }
 
 -(void) update:(CCTime)delta {
@@ -169,6 +164,9 @@ float groundY;
         float birdY = bird.sprBird.position.y - bird.sprBird.contentSize.height / 2 + 7;
         if (birdY <= groundY) {
             // collision
+            if (bird.state != BIRD_STATE_FAIL) {
+                [[OALSimpleAudio sharedInstance] playEffect:@"sfx_hit.caf"];
+            }
             bird.sprBird.position = ccp(bird.sprBird.position.x, groundY + bird.sprBird.contentSize.height / 2);
             [bird doState:BIRD_STATE_DIE];
             [self handleGameOver];
@@ -184,6 +182,8 @@ float groundY;
                 CGRect curPipeBottomRect = [curPipe getBottomRect];
                 if (CGRectIntersectsRect(birdRect, curPipeTopRect) || CGRectIntersectsRect(birdRect, curPipeBottomRect)){
                     [bird doState:BIRD_STATE_FAIL];
+                    // sound
+                    [[OALSimpleAudio sharedInstance] playEffect:@"sfx_hit.caf"];
                     return;
                 }
                 [curPipe update:delta];
@@ -195,7 +195,11 @@ float groundY;
 }
 
 -(void) handleGameOver {
-    NSLog(@"handling game over");
+    // sound effect
+    [[OALSimpleAudio sharedInstance] stopBg];
+    [[OALSimpleAudio sharedInstance] playEffect:@"sfx_die.caf"];
+    // remove pause/ resume button
+    [self removeChild:btnResume cleanup:YES];
     // scene effect
     CCNodeColor *dieEffect = [CCNodeColor nodeWithColor:[CCColor colorWithWhite:1 alpha:0.5]];
     [dieEffect runAction:[CCActionTintTo actionWithDuration:0.65 color:[CCColor colorWithWhite:0 alpha:1]]];
@@ -253,6 +257,8 @@ float groundY;
         sprNew.anchorPoint = ccp(0, 0.5);
         sprNew.position = ccp(140, 60);
         [sprScorePanel addChild:sprNew];
+        // sound
+        [[OALSimpleAudio sharedInstance] playEffect:@"sfx_point.aif"];
     }
     
     float scoreX = sprScorePanel.contentSize.width - 30;
@@ -301,9 +307,21 @@ float groundY;
         [self removeChild:sprReadyText cleanup:true];
         [self removeChild:sprTutorial cleanup:true];
         [bird doState:BIRD_STATE_JUMP];
+        [[OALSimpleAudio sharedInstance] playEffect:@"sfx_wing.caf"];
     } else if (!isPause && (bird.state != BIRD_STATE_DIE && bird.state != BIRD_STATE_FAIL)) {
         [bird doState:BIRD_STATE_JUMP];
+        [[OALSimpleAudio sharedInstance] playEffect:@"sfx_wing.caf"];
     }
+}
+
+-(void) pauseGame {
+    isPause = YES;
+}
+
+-(void) resumeGame {
+    isPause = NO;
+    [bird doState:BIRD_STATE_JUMP];
+    [[OALSimpleAudio sharedInstance] playEffect:@"sfx_wing.caf"];
 }
 
 - (void)onBtnPlayClicked:(id)sender {

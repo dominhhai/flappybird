@@ -10,6 +10,11 @@
 		C81B60E718D32DB900421D08 /* PlayScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C81B60E618D32DB900421D08 /* PlayScene.m */; };
 		C81E34F218DC642300982F0A /* Pipe.m in Sources */ = {isa = PBXBuildFile; fileRef = C81E34F118DC642300982F0A /* Pipe.m */; };
 		C84718CE18DEB9EF002BCD94 /* Footer.m in Sources */ = {isa = PBXBuildFile; fileRef = C84718CD18DEB9EF002BCD94 /* Footer.m */; };
+		C8657CD718E847970075DFEB /* sfx_die.caf in Resources */ = {isa = PBXBuildFile; fileRef = C8657CD218E847970075DFEB /* sfx_die.caf */; };
+		C8657CD818E847970075DFEB /* sfx_hit.caf in Resources */ = {isa = PBXBuildFile; fileRef = C8657CD318E847970075DFEB /* sfx_hit.caf */; };
+		C8657CD918E847970075DFEB /* sfx_point.aif in Resources */ = {isa = PBXBuildFile; fileRef = C8657CD418E847970075DFEB /* sfx_point.aif */; };
+		C8657CDA18E847970075DFEB /* sfx_swooshing.caf in Resources */ = {isa = PBXBuildFile; fileRef = C8657CD518E847970075DFEB /* sfx_swooshing.caf */; };
+		C8657CDB18E847970075DFEB /* sfx_wing.caf in Resources */ = {isa = PBXBuildFile; fileRef = C8657CD618E847970075DFEB /* sfx_wing.caf */; };
 		C8F6473A18C9CD3100CBF405 /* GameConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6473918C9CD3100CBF405 /* GameConfig.m */; };
 		C8F6474018C9CEA100CBF405 /* MenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6473F18C9CEA100CBF405 /* MenuScene.m */; };
 		C8F6474318C9D3D600CBF405 /* Bird.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6474218C9D3D600CBF405 /* Bird.m */; };
@@ -235,6 +240,11 @@
 		C81E34F118DC642300982F0A /* Pipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pipe.m; path = Classes/Pipe.m; sourceTree = "<group>"; };
 		C84718CC18DEB9EF002BCD94 /* Footer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Footer.h; path = Classes/Footer.h; sourceTree = "<group>"; };
 		C84718CD18DEB9EF002BCD94 /* Footer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Footer.m; path = Classes/Footer.m; sourceTree = "<group>"; };
+		C8657CD218E847970075DFEB /* sfx_die.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sfx_die.caf; path = Resources/sfx_die.caf; sourceTree = "<group>"; };
+		C8657CD318E847970075DFEB /* sfx_hit.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sfx_hit.caf; path = Resources/sfx_hit.caf; sourceTree = "<group>"; };
+		C8657CD418E847970075DFEB /* sfx_point.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = sfx_point.aif; path = Resources/sfx_point.aif; sourceTree = "<group>"; };
+		C8657CD518E847970075DFEB /* sfx_swooshing.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sfx_swooshing.caf; path = Resources/sfx_swooshing.caf; sourceTree = "<group>"; };
+		C8657CD618E847970075DFEB /* sfx_wing.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sfx_wing.caf; path = Resources/sfx_wing.caf; sourceTree = "<group>"; };
 		C8F6473818C9CD3100CBF405 /* GameConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameConfig.h; path = Classes/GameConfig.h; sourceTree = "<group>"; };
 		C8F6473918C9CD3100CBF405 /* GameConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameConfig.m; path = Classes/GameConfig.m; sourceTree = "<group>"; };
 		C8F6473E18C9CEA100CBF405 /* MenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuScene.h; path = Classes/MenuScene.h; sourceTree = "<group>"; };
@@ -736,6 +746,11 @@
 		C8F9588918C8845200D9E229 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C8657CD218E847970075DFEB /* sfx_die.caf */,
+				C8657CD318E847970075DFEB /* sfx_hit.caf */,
+				C8657CD418E847970075DFEB /* sfx_point.aif */,
+				C8657CD518E847970075DFEB /* sfx_swooshing.caf */,
+				C8657CD618E847970075DFEB /* sfx_wing.caf */,
 				C8F95B4618C8854C00D9E229 /* atlas.png */,
 				C8F95B4718C8854C00D9E229 /* atlas.txt */,
 				C8F9588C18C8845200D9E229 /* Default@2x.png */,
@@ -1662,6 +1677,11 @@
 				C8F95B1218C8845700D9E229 /* LICENSE_Chipmunk.txt in Resources */,
 				C8F95B4818C8854C00D9E229 /* atlas.png in Resources */,
 				C8F95B4918C8854C00D9E229 /* atlas.txt in Resources */,
+				C8657CD718E847970075DFEB /* sfx_die.caf in Resources */,
+				C8657CD818E847970075DFEB /* sfx_hit.caf in Resources */,
+				C8657CD918E847970075DFEB /* sfx_point.aif in Resources */,
+				C8657CDA18E847970075DFEB /* sfx_swooshing.caf in Resources */,
+				C8657CDB18E847970075DFEB /* sfx_wing.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

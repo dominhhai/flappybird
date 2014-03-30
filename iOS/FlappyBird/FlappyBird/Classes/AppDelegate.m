@@ -23,7 +23,7 @@
 	// If you want more flexibility, you can configure Cocos2D yourself instead of calling setupCocos2dWithOptions:.
 	[self setupCocos2dWithOptions:@{
 		// Show the FPS and draw call label.
-		CCSetupShowDebugStats: @(YES),
+//		CCSetupShowDebugStats: @(YES),
 		
 		// More examples of options you might want to fiddle with:
 		// (See CCAppDelegate.h for more information)
@@ -58,6 +58,13 @@
         [atlasInfo setObject:datum forKey:[datum objectAtIndex:0]];
     }
     GameConfig.atlasInfo = atlasInfo;
+    // preload sound and music
+    OALSimpleAudio *audio = [OALSimpleAudio sharedInstance];
+    [audio preloadBg:@"sfx_swooshing.caf"];
+    [audio preloadEffect:@"sfx_die.caf"];
+    [audio preloadEffect:@"sfx_hit.caf"];
+    [audio preloadEffect:@"sfx_point.aif"];
+    [audio preloadEffect:@"sfx_wing.caf"];
     
 	// This method should return the very first scene to be run when your app starts.
 	return [MenuScene scene];
