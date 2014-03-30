@@ -16,7 +16,8 @@ typedef enum {
     BIRD_STATE_JUMP,
     BIRD_STATE_DOWN,
     BIRD_STATE_DIE,
-    BIRD_STATE_PAUSE
+    BIRD_STATE_PAUSE,
+    BIRD_STATE_FAIL
 } BirdState;
 
 typedef enum {

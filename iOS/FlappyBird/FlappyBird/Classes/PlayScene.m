@@ -26,6 +26,8 @@ NSMutableArray* activePipes;
 float REAL_HEIGHT;
 int score;
 
+float groundY;
+
 
 + (PlayScene *)scene {
     return [[self alloc] init];
@@ -92,6 +94,7 @@ int score;
     REAL_HEIGHT = self.contentSize.height - footer.spr_1.position.y - footer.spr_1.contentSize.height / 2;
     // bird
     bird = [[Bird alloc] initWithType:arc4random_uniform(3) position:birdPosition scene:self];
+    groundY = footer.spr_1.position.y + footer.spr_1.contentSize.height / 2 - 7;
     
     return self;
 }
@@ -158,28 +161,35 @@ int score;
     if (bird.state != BIRD_STATE_STAND && bird.state != BIRD_STATE_DIE) {
         // Ground collision detection
         float birdY = bird.sprBird.position.y - bird.sprBird.contentSize.height / 2 + 7;
-        float groundY = footer.spr_1.position.y + footer.spr_1.contentSize.height / 2 - 7;
         if (birdY <= groundY) {
             // collision
             bird.sprBird.position = ccp(bird.sprBird.position.x, groundY + bird.sprBird.contentSize.height / 2);
             [bird doState:BIRD_STATE_DIE];
-            NSLog(@"Collision with Ground");            
+            [self handleGameOver];
+            return;
         }
-        // bird RECT
-        CGRect birdRect = [bird getRect];
-        for (int i = activePipes.count - 1; i >= 0; i--) {
-            Pipe *curPipe = (Pipe*)[activePipes objectAtIndex:i];
-            // Pipe collision detection
-            CGRect curPipeTopRect = [curPipe getTopRect];
-            CGRect curPipeBottomRect = [curPipe getBottomRect];
-            if (CGRectIntersectsRect(birdRect, curPipeTopRect) || CGRectIntersectsRect(birdRect, curPipeBottomRect)){
-                [bird doState:BIRD_STATE_DIE];
-                NSLog(@"Collision with pipe");
+        if (bird.state != BIRD_STATE_FAIL) {
+            // bird RECT
+            CGRect birdRect = [bird getRect];
+            for (int i = activePipes.count - 1; i >= 0; i--) {
+                Pipe *curPipe = (Pipe*)[activePipes objectAtIndex:i];
+                // Pipe collision detection
+                CGRect curPipeTopRect = [curPipe getTopRect];
+                CGRect curPipeBottomRect = [curPipe getBottomRect];
+                if (CGRectIntersectsRect(birdRect, curPipeTopRect) || CGRectIntersectsRect(birdRect, curPipeBottomRect)){
+                    [bird doState:BIRD_STATE_FAIL];
+                    return;
+                }
+                [curPipe update:delta];
             }
-            [curPipe update:delta];
         }
+        
         [bird update:delta];
     }
+}
+
+-(void) handleGameOver {
+    NSLog(@"handling game over");
 }
 
 - (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
