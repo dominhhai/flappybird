@@ -320,7 +320,7 @@ float groundY;
 
 -(void) resumeGame {
     isPause = NO;
-    if ((bird.state != BIRD_STATE_DIE && bird.state != BIRD_STATE_FAIL)) {
+    if (bird.state != BIRD_STATE_DIE && bird.state != BIRD_STATE_FAIL) {
     	[bird doState:BIRD_STATE_JUMP];
     	[[OALSimpleAudio sharedInstance] playEffect:@"sfx_wing.caf"];
     }
