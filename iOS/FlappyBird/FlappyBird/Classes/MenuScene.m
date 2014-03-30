@@ -86,7 +86,7 @@ Footer* footer;
 
 - (void)onBtnScoreClicked:(id)sender {
     // start spinning scene with transition
-    NSLog(@"BtnScore Clicked");
+    NSLog(@"MenuScene BtnScore Clicked");
 }
 
 -(void) update:(CCTime)delta {

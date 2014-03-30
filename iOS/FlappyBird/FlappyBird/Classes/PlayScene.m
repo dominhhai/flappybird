@@ -10,6 +10,7 @@
 #import "GameConfig.h"
 #import "Footer.h"
 #import "Bird.h"
+#import "CCAnimation.h"
 
 @implementation PlayScene
 
@@ -27,7 +28,6 @@ float REAL_HEIGHT;
 int score;
 
 float groundY;
-
 
 + (PlayScene *)scene {
     return [[self alloc] init];
@@ -190,6 +190,89 @@ float groundY;
 
 -(void) handleGameOver {
     NSLog(@"handling game over");
+    // scene effect
+    CCNodeColor *dieEffect = [CCNodeColor nodeWithColor:[CCColor colorWithWhite:1 alpha:0.5]];
+    [dieEffect runAction:[CCActionTintTo actionWithDuration:0.65 color:[CCColor colorWithWhite:0 alpha:1]]];
+    [self addChild:dieEffect];
+    // Game Over Text and Score Panel
+    NSArray* scorePanelInfo = [atlasInfo objectForKey:@"score_panel"];
+    NSArray* gameOverTextInfo = [atlasInfo objectForKey:@"text_game_over"];
+    CCSprite* sprScorePanel = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[scorePanelInfo objectAtIndex:3] intValue], [[scorePanelInfo objectAtIndex:4] intValue], [[scorePanelInfo objectAtIndex:1] intValue], [[scorePanelInfo objectAtIndex:2] intValue])];
+    CCSprite* sprGameOverText = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[gameOverTextInfo objectAtIndex:3] intValue], [[gameOverTextInfo objectAtIndex:4] intValue], [[gameOverTextInfo objectAtIndex:1] intValue], [[gameOverTextInfo objectAtIndex:2] intValue])];
+    float scorePanelY = self.contentSize.height / 2 - sprScorePanel.contentSize.height / 4;
+    float gameOverTextY = scorePanelY + sprScorePanel.contentSize.height / 2 + sprGameOverText.contentSize.height / 2 + 30;
+    sprGameOverText.position = ccp(self.contentSize.width / 2, gameOverTextY);
+    sprScorePanel.position = ccp(self.contentSize.width / 2, -sprScorePanel.contentSize.height / 2);
+    sprGameOverText.scale = 0.5;
+    [sprGameOverText runAction:[CCActionScaleTo actionWithDuration:0.45 scale:1]];
+    [sprScorePanel runAction:[CCActionMoveTo actionWithDuration:0.6 position:ccp(self.contentSize.width / 2, scorePanelY)]];
+    
+    int highest = 0; // TODO load highest score
+    if (score > 10) {
+        int medalIndex = -1;
+        if (score > highest) {
+            medalIndex = 1;
+        } else if (score + 10 >= highest) {
+            medalIndex = 0;
+        }
+        if (medalIndex > -1) {            
+            NSMutableArray* spriteFrames = [NSMutableArray array];
+            for (int i = medalIndex; i < medalIndex + 3; i += 2) {
+                NSString *resource = [NSString stringWithFormat:@"medals_%i", i];
+                
+                NSArray *medalInfo = [atlasInfo objectForKey:resource];
+                CGSize medalSizeInPixels = CGSizeMake([[medalInfo objectAtIndex:1] intValue], [[medalInfo objectAtIndex:2] intValue]);
+                CGRect medalRectInPixels = {CGPointMake([[medalInfo objectAtIndex:3] intValue], [[medalInfo objectAtIndex:4] intValue]), medalSizeInPixels};
+                CCSpriteFrame* spriteFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:medalRectInPixels rotated:NO offset:CGPointZero originalSize:medalSizeInPixels];
+                [spriteFrames addObject:spriteFrame];
+            }
+            CCSprite *medal = [CCSprite spriteWithSpriteFrame:[spriteFrames objectAtIndex:0]];
+            medal.anchorPoint = ccp(0, 0.25);
+            medal.position = ccp(31, 46);
+            CCAnimation* animation = [CCAnimation animationWithSpriteFrames: spriteFrames delay:0.15];
+            CCActionAnimate* actionAnimate = [CCActionAnimate actionWithAnimation:animation];
+            [medal runAction:[CCActionRepeatForever actionWithAction:actionAnimate]];
+            
+            [sprScorePanel addChild:medal];
+        }
+    }
+    if (score > highest) {
+        highest = score;
+        // TODO save highest score
+        // show new label
+        NSArray *newInfo = [atlasInfo objectForKey:@"new"];
+        CCSprite *sprNew = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[newInfo objectAtIndex:3] intValue], [[newInfo objectAtIndex:4] intValue], [[newInfo objectAtIndex:1] intValue], [[newInfo objectAtIndex:2] intValue])];
+        sprNew.anchorPoint = ccp(0, 0.5);
+        sprNew.position = ccp(140, 60);
+        [sprScorePanel addChild:sprNew];
+    }
+    
+    [self addChild:sprGameOverText];
+    [self addChild:sprScorePanel];
+    
+    // btn Play
+    NSArray *btnPlayInfo = [atlasInfo objectForKey:@"button_play"];
+    CGSize btnSizeInPixels = CGSizeMake([[btnPlayInfo objectAtIndex:1] intValue], [[btnPlayInfo objectAtIndex:2] intValue]);
+    CGRect btnPlayRectInPixels = {CGPointMake([[btnPlayInfo objectAtIndex:3] intValue], [[btnPlayInfo objectAtIndex:4] intValue]), btnSizeInPixels};
+    CCSpriteFrame *btnPlayFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:btnPlayRectInPixels rotated:NO offset:CGPointZero originalSize:btnSizeInPixels];
+    CCButton *btnPlay = [CCButton buttonWithTitle:@"" spriteFrame:btnPlayFrame];
+    CGPoint btnPlayPosition = ccp(self.contentSize.width / 4, sprScorePanel.position.y - btnSizeInPixels.height);
+    btnPlay.position = btnPlayPosition;
+    [btnPlay setTarget:self selector:@selector(onBtnPlayClicked:)];    
+    // btn Score
+    NSArray *btnScoreInfo = [atlasInfo objectForKey:@"button_score"];
+    CGRect btnScoreRectInPixels = {CGPointMake([[btnScoreInfo objectAtIndex:3] intValue], [[btnScoreInfo objectAtIndex:4] intValue]), btnSizeInPixels};
+    CCSpriteFrame *btnScoreFrame = [CCSpriteFrame frameWithTexture:atlas rectInPixels:btnScoreRectInPixels rotated:NO offset:CGPointZero originalSize:btnSizeInPixels];
+    CCButton *btnScore = [CCButton buttonWithTitle:@"" spriteFrame:btnScoreFrame];
+    btnScore.position = ccp(self.contentSize.width - btnPlayPosition.x, btnPlayPosition.y);
+    [btnScore setTarget:self selector:@selector(onBtnScoreClicked:)];
+    
+    float btnY = scorePanelY - sprScorePanel.contentSize.height / 2 - 10 - btnSizeInPixels.height / 2;
+    [btnPlay runAction:[CCActionMoveTo actionWithDuration:0.62 position:ccp(btnPlay.position.x, btnY)]];
+    [btnScore runAction:[CCActionMoveTo actionWithDuration:0.62 position:ccp(btnScore.position.x, btnY)]];
+    
+    [self addChild:btnPlay];
+    [self addChild:btnScore];
 }
 
 - (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -198,9 +281,20 @@ float groundY;
         [self removeChild:sprReadyText cleanup:true];
         [self removeChild:sprTutorial cleanup:true];
         [bird doState:BIRD_STATE_JUMP];
-    } else if (!isPause && bird.state != BIRD_STATE_DIE) {
+    } else if (!isPause && (bird.state != BIRD_STATE_DIE && bird.state != BIRD_STATE_FAIL)) {
         [bird doState:BIRD_STATE_JUMP];
     }
+}
+
+- (void)onBtnPlayClicked:(id)sender {
+    [[CCDirector sharedDirector] replaceScene:[PlayScene scene]];
+    [self removeAllChildrenWithCleanup:YES];
+    [self removeFromParent];
+}
+
+- (void)onBtnScoreClicked:(id)sender {
+    // start spinning scene with transition
+    NSLog(@"PlayScene BtnScore Clicked");
 }
 
 @end
