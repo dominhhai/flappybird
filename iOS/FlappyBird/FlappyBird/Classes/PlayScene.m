@@ -26,6 +26,7 @@ bool isPause = NO;
 NSMutableArray* activePipes;
 float REAL_HEIGHT;
 int score;
+CCLabelTTF *scoreLabel;
 
 float groundY;
 
@@ -35,8 +36,6 @@ float groundY;
 - (id)init {
     self = [super init];
     if (!self) return(nil);
-    
-    score = 0;
     
     [self setUserInteractionEnabled:YES];
     [self setMultipleTouchEnabled:NO];
@@ -95,6 +94,13 @@ float groundY;
     // bird
     bird = [[Bird alloc] initWithType:arc4random_uniform(3) position:birdPosition scene:self];
     groundY = footer.spr_1.position.y + footer.spr_1.contentSize.height / 2 - 7;
+    // score
+    score = 0;
+    scoreLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Chalkduster" fontSize:30.0f];
+    scoreLabel.positionType = CCPositionTypeNormalized;
+    scoreLabel.color = [CCColor whiteColor];
+    scoreLabel.position = ccp(0.5f, 0.85f);
+    [self addChild:scoreLabel];
     
     return self;
 }
@@ -139,7 +145,7 @@ float groundY;
 
 -(void)increaseScore {
     score ++;
-    NSLog(@"increase score: %i", score);
+    scoreLabel.string = [NSString stringWithFormat:@"%i", score];
 }
 
 -(void) pauseGame {
@@ -207,7 +213,7 @@ float groundY;
     [sprGameOverText runAction:[CCActionScaleTo actionWithDuration:0.45 scale:1]];
     [sprScorePanel runAction:[CCActionMoveTo actionWithDuration:0.6 position:ccp(self.contentSize.width / 2, scorePanelY)]];
     
-    int highest = 0; // TODO load highest score
+    int highest = [[NSUserDefaults standardUserDefaults] integerForKey:@"HAIDM_FB_SCORE"];
     if (score > 10) {
         int medalIndex = -1;
         if (score > highest) {
@@ -238,7 +244,9 @@ float groundY;
     }
     if (score > highest) {
         highest = score;
-        // TODO save highest score
+        // save highest score
+        [[NSUserDefaults standardUserDefaults] setInteger:highest forKey:@"HAIDM_FB_SCORE"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         // show new label
         NSArray *newInfo = [atlasInfo objectForKey:@"new"];
         CCSprite *sprNew = [CCSprite spriteWithTexture:atlas rect:CGRectMake([[newInfo objectAtIndex:3] intValue], [[newInfo objectAtIndex:4] intValue], [[newInfo objectAtIndex:1] intValue], [[newInfo objectAtIndex:2] intValue])];
@@ -246,6 +254,18 @@ float groundY;
         sprNew.position = ccp(140, 60);
         [sprScorePanel addChild:sprNew];
     }
+    
+    float scoreX = sprScorePanel.contentSize.width - 30;
+    CCLabelTTF *userScoreLabel = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"%i", score] fontName:@"Chalkduster" fontSize:20.0f];
+    userScoreLabel.color = [CCColor whiteColor];
+    userScoreLabel.anchorPoint = ccp(1, 0.5);
+    userScoreLabel.position = ccp(scoreX, 80);
+    CCLabelTTF *highestScoreLabel = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"%i", highest] fontName:@"Chalkduster" fontSize:20.0f];
+    highestScoreLabel.color = [CCColor whiteColor];
+    highestScoreLabel.anchorPoint = ccp(1, 0.5);
+    highestScoreLabel.position = ccp(scoreX, 36);
+    [sprScorePanel addChild:userScoreLabel];
+    [sprScorePanel addChild:highestScoreLabel];
     
     [self addChild:sprGameOverText];
     [self addChild:sprScorePanel];
